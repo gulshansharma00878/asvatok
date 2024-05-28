@@ -2,17 +2,18 @@ require('dotenv').config();
 console.log(process.env.DB_NAME)
 // const swaggerJSDocs = require('../swagger_example.json');
 const swaggerUI = require("swagger-ui-express");
+const fs = require("fs");
 const YAML = require("yamljs");
 
 
 const swaggerJSDocs = YAML.load("api.yaml");
 const options = {
-    customCss: `img {content:url(\'../logo.svg\'); height:auto;} `,
-    customfavIcon: "../favicon.ico",
-    customSiteTitle: "Code Improve API Doc",
+  customCss: `img {content:url(\'../logo.svg\'); height:auto;} `,
+  customfavIcon: "../favicon.ico",
+  customSiteTitle: "Code Improve API Doc",
 
 };
-module.exports={
+module.exports = {
   swaggerServe: swaggerUI.serve, swaggerSetup: swaggerUI.setup(swaggerJSDocs, options),
 
   "development": {
@@ -21,8 +22,12 @@ module.exports={
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "dialect": "mysql",
-    "ssl": 'true',
-    logging:false
+    // "ssl": 'true',
+    // logging: false,
+    // ssl: {
+    //   rejectUnauthorized: true,
+    //   ca: fs.readFileSync("./ca_asvatok.cer").toString(),
+    // },
   },
   "test": {
     "username": "root",
@@ -37,7 +42,6 @@ module.exports={
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "dialect": "mysql",
-    "ssl": 'true',
-    logging:false
-  },
+   
+  }, 
 }
