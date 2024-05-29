@@ -51,11 +51,11 @@ class codeController {
 
         console.log(verificationLink);
 
-        // await commonController.sendEmail(
-        //   email,
-        //   "Welcome to the Services",
-        //   `Your verification link ${verificationLink} </br> This link will expire in 15 min.`
-        // );
+        await commonController.sendEmail(
+          email,
+          "Welcome to the Services",
+          `Your verification link ${verificationLink} </br> This link will expire in 15 min.`
+        );
 
         commonController.successMessage(
           email,
