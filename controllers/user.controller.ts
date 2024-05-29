@@ -46,10 +46,10 @@ class userController {
       let a_back = files.a_back[0].path;
       let pan = files.pan[0].path;
       let sign = files.sign[0].path;
-      a_front = "http://localhost:4000/" + a_front;
-      a_back = "http://localhost:4000/" + a_back;
-      pan = "http://localhost:4000/" + pan;
-      sign = "http://localhost:4000/" + sign;
+      a_front = "https://asvatok.onrender.com/" + a_front;
+      a_back = "https://asvatok.onrender.com/" + a_back;
+      pan = "https://asvatok.onrender.com/" + pan;
+      sign = "https://asvatok.onrender.com/" + sign;
       await codeController.kyc({ userId, a_front, a_back, pan, sign }, res);
     } catch (e) {
       console.warn(e);

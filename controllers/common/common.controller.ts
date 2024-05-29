@@ -1,14 +1,19 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs'
+require('dotenv').config();
+
 const sgMail = require('@sendgrid/mail');
 // const { SECRET_KEY, MAP_SECRET_KEY } = require('../appconfig');
+sgMail.setApiKey(
+ process.env.test_sendgrid
+);
 
 
 class commonController {
   sendEmail = async (to: any, subject: any, message: any) => {
     const msg = {
-      to: [to],
-      from: "reservations@thecatsinn.com",
+      to: to,
+      from: "mailto:stier.world.us@gmail.com",
       subject: subject,
       text: message,
       html: message,

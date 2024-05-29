@@ -47,7 +47,7 @@ class codeController {
           process.env.TOKEN_SECRET
         );
 
-        const verificationLink = `http://localhost:4000/api/v1/verify?token=${token}`;
+        const verificationLink = `https://asvatok.onrender.com/api/v1/verify?token=${token}`;
 
         console.log(verificationLink);
 
