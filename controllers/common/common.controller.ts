@@ -13,7 +13,7 @@ class commonController {
   sendEmail = async (to: any, subject: any, message: any) => {
     const msg = {
       to: to,
-      from: "mailto:stier.world.us@gmail.com",
+      from: "stier.world.us@gmail.com",
       subject: subject,
       text: message,
       html: message,
