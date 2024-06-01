@@ -41,6 +41,7 @@ class userController {
   async kyc(req: Request, res: Response) {
     const { userId } = (req as any).user.id;
     const files = (req as any)?.files;
+    const { name, address, number, id_num, type } = req.body
     try {
       let a_front = files.a_front[0].path;
       let a_back = files.a_back[0].path;
@@ -49,13 +50,24 @@ class userController {
       let self_pic = files.self_pic[0].path
       let sign = files.sign[0].path
 
-      a_front = "https://asvatok.onrender.com/" +   a_front;
+      a_front = "https://asvatok.onrender.com/" + a_front;
       a_back = "https://asvatok.onrender.com/" + a_back;
       pan = "https://asvatok.onrender.com/" + pan;
       pan_back = "https://asvatok.onrender.com/" + pan_back;
       self_pic = "https://asvatok.onrender.com/" + self_pic;
       sign = "https://asvatok.onrender.com/" + sign;
-      await codeController.kyc({ userId, a_front, a_back, pan, pan_back, self_pic, sign }, res);
+      await codeController.kyc({ userId, name, address, number, id_num, type, a_front, a_back, pan, pan_back, self_pic, sign }, res);
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async get_kyc_status(req: Request, res: Response) {
+    try {
+      const userId = (req as any).user.id;
+      await codeController.get_kyc_status({ userId }, res)
+
     } catch (e) {
       console.warn(e);
       commonController.errorMessage(`${e}`, res);

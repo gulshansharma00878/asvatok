@@ -174,7 +174,7 @@ class codeController {
   }
 
   async kyc(payload: any, res: Response) {
-    const { userId, a_front, a_back, pan, pan_back, self_pic, sign } = payload;
+    const { userId,name, address, number, id_num,type, a_front, a_back, pan, pan_back, self_pic, sign } = payload;
     try {
       const checkUser = await db.users.findOne({
         where: {
@@ -198,13 +198,39 @@ class codeController {
         //     commonController.errorMessage(`Kyc is rejected`, res);
         //   }
         // } else {
-          const addKyc = await db.kycs.create({
-            userId, a_front, a_back, pan, pan_back, self_pic, sign, rejected: false, accepted: false
-          })
-          commonController.successMessage(addKyc, "Kyc submission completed", res)
-      //   }
-      // } else {
-      //   commonController.errorMessage(`User not found`, res);
+        const addKyc = await db.kycs.create({
+          userId, name, address, number, id_num,type, a_front, a_back, pan, pan_back, self_pic, sign, rejected: false, accepted: false
+        })
+        commonController.successMessage(addKyc, "Kyc submission completed", res)
+        //   }
+        // } else {
+        //   commonController.errorMessage(`User not found`, res);
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e);
+    }
+  }
+
+  async get_kyc_status(payload: any, res: Response) {
+    const { userId } = payload
+    try {
+      const checkUser = await db.users.findOne({
+        where: {
+          id: userId,
+        },
+      });
+      if (checkUser) {
+        const checkKyc = await db.kycs.findOne({
+          where: {
+            userId
+          }
+        })
+        if (checkKyc) {
+          commonController.successMessage({kyc_accepted: checkKyc.accepted, kyc_rejected: checkKyc.rejected},`Kyc status `, res);
+        } else {
+          commonController.errorMessage(`User not found`, res);
+        }
       }
     } catch (e) {
       commonController.errorMessage(`${e}`, res);

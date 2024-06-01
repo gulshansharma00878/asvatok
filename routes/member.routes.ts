@@ -45,9 +45,14 @@ const cpUpload = upload_kyc.fields([
   { name: "a_front", maxCount: 1 },
   { name: "a_back", maxCount: 1 },
   { name: "pan", maxCount: 1 },
+  { name: "pan_back", maxCount: 1 },
+  { name: "self_pic", maxCount: 1 },
   { name: "sign", maxCount: 1 },
 ]);
+
 router.post("/kyc", cpUpload,userController.kyc);
+router.post("/get_kyc_status",userController.get_kyc_status);
+
 router.post("/changepassword", userController.change_password);
 
 
