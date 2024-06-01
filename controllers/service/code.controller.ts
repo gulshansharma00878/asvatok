@@ -122,7 +122,7 @@ class codeController {
       });
 
       if (checkUser) {
-        if (checkUser.active == true) {
+        if (checkUser.active === true) {
           if (
             await Encrypt.comparePassword(
               password.toString(),
@@ -136,73 +136,34 @@ class codeController {
               },
               process.env.TOKEN_SECRET
             );
-            const checkNewData = await db.company_registrations.findOne({
+            const checkKyc = await db.kycs.findOne({
               where: {
-                userId: checkUser.id,
-              },
-            });
-            if (checkNewData || checkUser.companyId) {
+                userId: checkUser.id
+              }
+            })
+            if (checkKyc) {
+
               commonController.successMessage(
-                { token, companyRegistrated: true, verify: true },
+                { token, kyc_accepted: checkKyc.accepted, kyc_rejected: checkKyc.rejected },
                 "Login success",
                 res
               );
             } else {
               commonController.successMessage(
-                { token, companyRegistrated: false, verify: true },
+                { token, kyc_accepted: null, kyc_rejected: null },
                 "Login success",
                 res
               );
             }
+
+
           } else {
             commonController.errorMessage("Wrong Password", res);
           }
         } else {
-          if (
-            await Encrypt.comparePassword(
-              password.toString(),
-              checkUser.password.toString()
-            )
-          ) {
-            const checkOtp = await db.userotps.findOne({
-              where: {
-                userId: checkUser.id,
-              },
-            });
-            var otp = commonController.generateOtp();
-            console.log(otp);
-            await checkOtp.update({
-              otpValue: otp,
-            });
-
-            await commonController.sendEmail(
-              email,
-              "Welcome to the Services",
-              `Your verification otp is ${otp}`
-            );
-
-            const checkNewData = await db.company_registrations.findOne({
-              where: {
-                userId: checkUser.id,
-              },
-            });
-            if (checkNewData || checkUser.companyId) {
-              commonController.successMessage(
-                { companyRegistrated: true, verify: false },
-                "Login success",
-                res
-              );
-            } else {
-              commonController.successMessage(
-                { companyRegistrated: false, verify: false },
-                "Login success",
-                res
-              );
-            }
-          } else {
-            commonController.errorMessage("Wrong Password", res);
-          }
+          commonController.errorMessage("Not verified", res);
         }
+
       } else {
         commonController.errorMessage("User Not Registered", res);
       }
@@ -213,7 +174,7 @@ class codeController {
   }
 
   async kyc(payload: any, res: Response) {
-    const { userId, a_front, a_back, pan, sign } = payload;
+    const { userId, a_front, a_back, pan, pan_back, self_pic, sign } = payload;
     try {
       const checkUser = await db.users.findOne({
         where: {
@@ -221,29 +182,29 @@ class codeController {
         },
       });
       if (checkUser) {
-        const checkKyc = await db.kycs.findOne({
-          where: {
-            userId
-          }
-        })
-        if (checkKyc) {
-          if (checkKyc.rejected == false) {
-            if (checkKyc.accepted == false) {
-              commonController.errorMessage(`Kyc acceptation is pending `, res);
-            } else {
-              commonController.errorMessage(`Kyc accepted `, res);
-            }
-          } else {
-            commonController.errorMessage(`Kyc is rejected`, res);
-          }
-        } else {
+        // const checkKyc = await db.kycs.findOne({
+        //   where: {
+        //     userId
+        //   }
+        // })
+        // if (checkKyc) {
+        //   if (checkKyc.rejected == false) {
+        //     if (checkKyc.accepted == false) {
+        //       commonController.errorMessage(`Kyc acceptation is pending `, res);
+        //     } else {
+        //       commonController.errorMessage(`Kyc accepted `, res);
+        //     }
+        //   } else {
+        //     commonController.errorMessage(`Kyc is rejected`, res);
+        //   }
+        // } else {
           const addKyc = await db.kycs.create({
-            userId, a_front, a_back, pan, sign, rejected: false, accepted: false
+            userId, a_front, a_back, pan, pan_back, self_pic, sign, rejected: false, accepted: false
           })
           commonController.successMessage(addKyc, "Kyc submission completed", res)
-        }
-      } else {
-        commonController.errorMessage(`User not found`, res);
+      //   }
+      // } else {
+      //   commonController.errorMessage(`User not found`, res);
       }
     } catch (e) {
       commonController.errorMessage(`${e}`, res);

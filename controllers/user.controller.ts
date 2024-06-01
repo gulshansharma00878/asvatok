@@ -45,12 +45,17 @@ class userController {
       let a_front = files.a_front[0].path;
       let a_back = files.a_back[0].path;
       let pan = files.pan[0].path;
-      let sign = files.sign[0].path;
-      a_front = "https://asvatok.onrender.com/" + a_front;
+      let pan_back = files.pan_back[0].path
+      let self_pic = files.self_pic[0].path
+      let sign = files.sign[0].path
+
+      a_front = "https://asvatok.onrender.com/" +   a_front;
       a_back = "https://asvatok.onrender.com/" + a_back;
       pan = "https://asvatok.onrender.com/" + pan;
+      pan_back = "https://asvatok.onrender.com/" + pan_back;
+      self_pic = "https://asvatok.onrender.com/" + self_pic;
       sign = "https://asvatok.onrender.com/" + sign;
-      await codeController.kyc({ userId, a_front, a_back, pan, sign }, res);
+      await codeController.kyc({ userId, a_front, a_back, pan, pan_back, self_pic, sign }, res);
     } catch (e) {
       console.warn(e);
       commonController.errorMessage(`${e}`, res);
@@ -114,7 +119,7 @@ class userController {
         pic = get_data.pic
       }
       await codeController.edit_profile(
-        { userId, id, aboutMe, wallet, name ,pic },
+        { userId, id, aboutMe, wallet, name, pic },
         res
       );
     } catch (e) {

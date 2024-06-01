@@ -3,9 +3,16 @@ import { DateDataType, Model, Sequelize } from "sequelize";
 
 interface UsersAttributes {
   userId: number;
+  name: string;
+  number: string;
+  address: string;
+  id_num: string;
+  type: string;
   a_front: string;
   a_back: string;
   pan: string;
+  pan_back: string;
+  self_pic: string;
   sign: string;
   accepted: boolean;
   rejected: boolean;
@@ -14,9 +21,16 @@ interface UsersAttributes {
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
   class Users extends Model<UsersAttributes> implements UsersAttributes {
     userId!: number;
+    name!: string;
+    number!: string;
+    address!: string;
+    id_num!: string;
+    type!: string;
     a_front!: string;
     a_back!: string;
     pan!: string;
+    pan_back!: string;
+    self_pic!: string;
     sign!: string;
     accepted!: boolean;
     rejected!: boolean;
@@ -32,9 +46,16 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
   Users.init(
     {
       userId: { type: DataTypes.INTEGER },
-      a_front: { type: DataTypes.STRING },
-      a_back: { type: DataTypes.STRING },
-      pan: { type: DataTypes.STRING },
+      name: { type: DataTypes.INTEGER },
+      number: { type: DataTypes.INTEGER },
+      address: { type: DataTypes.INTEGER },
+      id_num: { type: DataTypes.INTEGER },
+      type: { type: DataTypes.INTEGER },
+      a_front: { type: DataTypes.INTEGER },
+      a_back: { type: DataTypes.INTEGER },
+      pan: { type: DataTypes.INTEGER },
+      pan_back: { type: DataTypes.INTEGER },
+      self_pic: { type: DataTypes.INTEGER },
       sign: { type: DataTypes.STRING },
       accepted: { type: DataTypes.BOOLEAN },
       rejected: { type: DataTypes.BOOLEAN },
