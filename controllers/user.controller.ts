@@ -91,9 +91,49 @@ class userController {
 
     try {
       let pic = files.pic[0].path;
-      pic = "http://localhost:4000/" + pic;
+      pic = "https://asvatok.onrender.com/" + pic;
 
       await codeController.add_profile({ userId, aboutMe, wallet, pic }, res);
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async edit_profile(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const { id, aboutMe, wallet, name } = req.body;
+    const { files } = (req as any)?.files;
+    try {
+      const get_data = await db.profiles.findOne({
+        where: {
+          id
+        }
+      })
+      let pic = files.pic[0].path;
+      if (pic) {
+        pic = "https://asvatok.onrender.com/" + pic;
+      } else {
+        pic = get_data.pic
+      }
+      await codeController.edit_profile(
+        { userId, id, aboutMe, wallet, name, pic },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async get_profile(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const { oldPassword, password } = req.body;
+    try {
+      await codeController.get_profile(
+        { userId, password, oldPassword },
+        res
+      );
     } catch (e) {
       console.warn(e);
       commonController.errorMessage(`${e}`, res);
@@ -114,31 +154,7 @@ class userController {
     }
   }
 
-  async edit_profile(req: Request, res: Response) {
-    const userId = (req as any).user?.id;
-    const { id, aboutMe, wallet, name } = req.body;
-    const { files } = (req as any)?.files;
-    try {
-      const get_data = await db.profiles.findOne({
-        where: {
-          id
-        }
-      })
-      let pic = files.pic[0].path;
-      if (pic) {
-        pic = "http://localhost:4000/" + pic;
-      } else {
-        pic = get_data.pic
-      }
-      await codeController.edit_profile(
-        { userId, id, aboutMe, wallet, name, pic },
-        res
-      );
-    } catch (e) {
-      console.warn(e);
-      commonController.errorMessage(`${e}`, res);
-    }
-  }
+
 
 
 }

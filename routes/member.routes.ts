@@ -52,7 +52,9 @@ const cpUpload = upload_kyc.fields([
 
 router.post("/kyc", cpUpload,userController.kyc);
 router.post("/get_kyc_status",userController.get_kyc_status);
-
+router.post("/add_profile",userController.add_profile);
+router.post("/edit_profile",userController.edit_profile);
+router.post("/get_profile",userController.get_profile);
 router.post("/changepassword", userController.change_password);
 
 
