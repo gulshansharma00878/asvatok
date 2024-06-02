@@ -111,7 +111,6 @@ class codeController {
     }
   }
 
-
   async login(payload: any, res: Response) {
     const { email, password } = payload;
     try {
@@ -287,7 +286,7 @@ class codeController {
           id: userId
         }
       })
-      commonController.successMessage({}, "Profile Data updated", res)
+      commonController.successMessage(update_user, "Profile Data updated", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
     }
