@@ -140,16 +140,17 @@ class codeController {
                 userId: checkUser.id
               }
             })
+           
             if (checkKyc) {
 
               commonController.successMessage(
-                { token, kyc_accepted: checkKyc.accepted, kyc_rejected: checkKyc.rejected },
+                { token, kyc_accepted: checkKyc.accepted, email:checkUser.email, name: checkUser.name, mobile: checkUser.mobile},
                 "Login success",
                 res
               );
             } else {
               commonController.successMessage(
-                { token, kyc_accepted: null, kyc_rejected: null },
+                { token, kyc_accepted: null },
                 "Login success",
                 res
               );
@@ -173,7 +174,7 @@ class codeController {
   }
 
   async kyc(payload: any, res: Response) {
-    const { userId,name, address, number, id_num,type, a_front, a_back, pan, pan_back, self_pic, sign } = payload;
+    const { userId, name, address, number, id_num, type, a_front, a_back, pan, pan_back, self_pic, sign } = payload;
     try {
       const checkUser = await db.users.findOne({
         where: {
@@ -198,7 +199,7 @@ class codeController {
         //   }
         // } else {
         const addKyc = await db.kycs.create({
-          userId, name, address, number, id_num,type, a_front, a_back, pan, pan_back, self_pic, sign,accepted: 0
+          userId, name, address, number, id_num, type, a_front, a_back, pan, pan_back, self_pic, sign, accepted: 0
         })
         commonController.successMessage(addKyc, "Kyc submission completed", res)
         //   }
@@ -226,7 +227,8 @@ class codeController {
           }
         })
         if (checkKyc) {
-          commonController.successMessage({kyc_accepted: checkKyc.accepted, kyc_rejected: checkKyc.rejected},`Kyc status `, res);
+          const { accepted } = checkKyc
+          commonController.successMessage(accepted, `Kyc status `, res);
         } else {
           commonController.errorMessage(`User not found`, res);
         }
