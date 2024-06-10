@@ -18,11 +18,11 @@ class codeController {
                 [Op.eq]: email,
               },
             },
-            {
-              mobile: {
-                [Op.eq]: mobile,
-              },
-            },
+            // {
+            //   mobile: {
+            //     [Op.eq]: mobile,
+            //   },
+            // },
           ],
         },
       });
@@ -198,7 +198,7 @@ class codeController {
         //   }
         // } else {
         const addKyc = await db.kycs.create({
-          userId, name, address, number, id_num,type, a_front, a_back, pan, pan_back, self_pic, sign, rejected: false, accepted: false
+          userId, name, address, number, id_num,type, a_front, a_back, pan, pan_back, self_pic, sign,accepted: 0
         })
         commonController.successMessage(addKyc, "Kyc submission completed", res)
         //   }

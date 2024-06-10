@@ -16,7 +16,6 @@ class commonController {
       from: "stier.world.us@gmail.com",
       subject: subject,
       text: message,
-      html: message,
     };
     await sgMail.send(msg);
   };
