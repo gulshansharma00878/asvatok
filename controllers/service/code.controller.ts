@@ -150,7 +150,7 @@ class codeController {
               );
             } else {
               commonController.successMessage(
-                { token, kyc_accepted: null },
+                { token, kyc_accepted: 3, email:checkUser.email, name: checkUser.name, mobile: checkUser.mobile},
                 "Login success",
                 res
               );
