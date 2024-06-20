@@ -384,7 +384,7 @@ class codeController {
         type_series,
         instock,
         keyword,
-        hidden, image1, image2, image3, image4, image5
+        hidden, image1, image2, image3, image4, image5, approved: 0
       })
       commonController.successMessage(add_pro, "Profile added", res)
 

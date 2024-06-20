@@ -117,7 +117,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       instock: { type: DataTypes.STRING },
       keyword: { type: DataTypes.STRING },
       hidden: { type: DataTypes.BOOLEAN },
-  approved: { type: DataTypes.BOOLEAN },
+      approved: { type: DataTypes.BOOLEAN },
 
     },
     {
