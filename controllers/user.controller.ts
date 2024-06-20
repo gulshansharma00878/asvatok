@@ -353,6 +353,20 @@ class userController {
     }
   }
 
+  async buy_request(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const { product_id, quantity, price} = req.body;
+    try {
+      await codeController.buy_request(
+        { userId , product_id, quantity, price},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
 }
 
 export default new userController();

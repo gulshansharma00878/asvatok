@@ -405,6 +405,33 @@ class codeController {
 
     }
   }
+
+  async buy_request(payload: any, res: Response) {
+    const { userId, product_id, quantity, price } = payload
+    try {
+      const add_request = await db.buys.create({
+        userId, product_id, quantity, price, active: 0
+      })
+      commonController.successMessage(add_request, "products Data", res)
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
+    }
+  }
+
+  async get_buy_requests(payload: any, res: Response) {
+    const { userId } = payload
+    try {
+      const get_data = await MyQuery.query(`SELECT buys.*, products.*
+      FROM buys
+      JOIN products ON buys.product_id = products.id where buys.userId = ${userId}; `, { type: QueryTypes.SELECT })
+      commonController.successMessage(get_data, "products Data", res)
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
+    }
+  }
+
 }
 
 export default new codeController();
