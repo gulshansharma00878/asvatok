@@ -210,6 +210,134 @@ class userController {
     }
   }
 
+  async add_product(req: Request, res: Response) {
+    const userId = (req as any).user.id;
+    const files = (req as any)?.files;
+    const {
+      sku_code,
+      name,
+      description,
+      issue_year,
+      item_condition,
+      catagory,
+      varities,
+      city,
+      ruler,
+      denomination,
+      signatory,
+      rarity,
+      specification,
+      metal,
+      remarks,
+      quantity,
+      custom_url,
+      video,
+      current_price,
+      initial_price,
+      note,
+      sold,
+      type_series,
+      instock,
+      keyword,
+      hidden
+    } = req.body;
+    try {
+      const _image1 = req.body.image1;
+      const _image2 = req.body.image2;
+      const _image3 = req.body.image3;
+      const _image4 = req.body.image4;
+      const _image5 = req.body.image5;
+      const random_number = commonController.generateOtp()
+
+      let image1 = `productimage/image1_${userId}_${random_number}.png`;
+      const image164Data = _image1.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(image1, image164Data, {
+        encoding: "base64",
+      });
+      image1 = "https://asvatok.onrender.com/" + image1;
+
+      let image2 = `productimage/image2_${userId}_${random_number}.png`;
+      const image264Data = _image2.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(image2, image264Data, {
+        encoding: "base64",
+      });
+      image2 = "https://asvatok.onrender.com/" + image2;
+
+      let image3 = `productimage/image3_${userId}_${random_number}.png`;
+      const image364Data = _image3.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(image3, image364Data, {
+        encoding: "base64",
+      });
+      image3 = "https://asvatok.onrender.com/" + image3;
+
+      let image4 = `productimage/image4_${userId}_${random_number}.png`;
+      const image464Data = _image4.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(image4, image464Data, {
+        encoding: "base64",
+      });
+      image4 = "https://asvatok.onrender.com/" + image4;
+
+      let image5 = `productimage/image5_${userId}_${random_number}.png`;
+      const image564Data = _image5.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(image5, image564Data, {
+        encoding: "base64",
+      });
+      image5 = "https://asvatok.onrender.com/" + image5;
+      let videoUrl = "";
+      if (video) {
+        const videoFilename = `productvideo/video_${userId}_${random_number}.mp4`;
+        const videoBase64Data = video.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+        fs.writeFileSync(videoFilename, videoBase64Data, { encoding: "base64" });
+        videoUrl = "https://asvatok.onrender.com/" + videoFilename;
+      }
+  
+
+      await codeController.add_product({ userId,sku_code,
+        name,
+        description,
+        issue_year,
+        item_condition,
+        catagory,
+        varities,
+        city,
+        ruler,
+        denomination,
+        signatory,
+        rarity,
+        specification,
+        metal,
+        remarks,
+        quantity,
+        custom_url,
+        video: videoUrl,
+        current_price,
+        initial_price,
+        note,
+        sold,
+        type_series,
+        instock,
+        keyword,
+        hidden , image1, image2, image3, image4, image5}, res);
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
 
 
 

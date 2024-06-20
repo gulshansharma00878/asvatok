@@ -57,6 +57,9 @@ router.post("/edit_profile",userController.edit_profile);
 router.post("/get_profile",userController.get_profile);
 router.post("/changepassword", userController.change_password);
 
+router.post("/add_product", userController.add_product);
+
+
 
 
 export default router;

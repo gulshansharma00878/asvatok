@@ -20,6 +20,8 @@ app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 app.use(bodyParser.text({ limit: "100mb" }));
 // Static file serving
 app.use("/profile", express.static(__dirname + "/profile"));
+app.use("/productimage", express.static(__dirname + "/productimage"));
+app.use("/productvideo", express.static(__dirname + "/productvideo"));
 app.use("/kyc", express.static(__dirname + "/kyc"));
 
 

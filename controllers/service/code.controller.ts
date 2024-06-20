@@ -140,17 +140,17 @@ class codeController {
                 userId: checkUser.id
               }
             })
-           
+
             if (checkKyc) {
 
               commonController.successMessage(
-                { token, kyc_accepted: checkKyc.accepted, email:checkUser.email, name: checkUser.name, mobile: checkUser.mobile},
+                { token, kyc_accepted: checkKyc.accepted, email: checkUser.email, name: checkUser.name, mobile: checkUser.mobile },
                 "Login success",
                 res
               );
             } else {
               commonController.successMessage(
-                { token, kyc_accepted: 3, email:checkUser.email, name: checkUser.name, mobile: checkUser.mobile},
+                { token, kyc_accepted: 3, email: checkUser.email, name: checkUser.name, mobile: checkUser.mobile },
                 "Login success",
                 res
               );
@@ -327,6 +327,70 @@ class codeController {
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
       console.warn(e);
+    }
+  }
+
+  async add_product(payload: any, res: Response) {
+    try {
+      const { userId, sku_code,
+        name,
+        description,
+        issue_year,
+        item_condition,
+        catagory,
+        varities,
+        city,
+        ruler,
+        denomination,
+        signatory,
+        rarity,
+        specification,
+        metal,
+        remarks,
+        quantity,
+        custom_url,
+        video,
+        current_price,
+        initial_price,
+        note,
+        sold,
+        type_series,
+        instock,
+        keyword,
+        hidden, image1, image2, image3, image4, image5 } = payload
+      const add_pro = await db.products.create({
+        userId, sku_code,
+        name,
+        description,
+        issue_year,
+        item_condition,
+        catagory,
+        varities,
+        city,
+        ruler,
+        denomination,
+        signatory,
+        rarity,
+        specification,
+        metal,
+        remarks,
+        quantity,
+        custom_url,
+        video,
+        current_price,
+        initial_price,
+        note,
+        sold,
+        type_series,
+        instock,
+        keyword,
+        hidden, image1, image2, image3, image4, image5
+      })
+      commonController.successMessage(add_pro, "Profile added", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
     }
   }
 }
