@@ -40,7 +40,7 @@ class userController {
   }
 
   async kyc(req: Request, res: Response) {
-    const { userId } = (req as any).user.id;
+    const userId = (req as any).user.id;
     const files = (req as any)?.files;
     const { name, address, number, id_num, type } = req.body
     try {
@@ -122,7 +122,7 @@ class userController {
   async get_kyc_status(req: Request, res: Response) {
     try {
       const userId = (req as any).user.id;
-      await codeController.get_kyc_status({ userId }, res)
+      await codeController.get_kyc_status(userId, res)
 
     } catch (e) {
       console.warn(e);
