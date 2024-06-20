@@ -50,7 +50,7 @@ const cpUpload = upload_kyc.fields([
   { name: "sign", maxCount: 1 },
 ]);
 
-router.post("/kyc", cpUpload,userController.kyc);
+router.post("/kyc",userController.kyc);
 router.post("/get_kyc_status",userController.get_kyc_status);
 router.post("/add_profile",userController.add_profile);
 router.post("/edit_profile",userController.edit_profile);
