@@ -2,6 +2,7 @@ import { Response, Request } from "express";
 import db from "../models";
 import commonController from "./common/common.controller";
 import codeController from "./service/code.controller";
+const fs = require("fs");
 // import summary from "../htmls/summary";
 // import event from "./service/event";
 
@@ -43,19 +44,74 @@ class userController {
     const files = (req as any)?.files;
     const { name, address, number, id_num, type } = req.body
     try {
-      let a_front = files.a_front[0].path;
-      let a_back = files.a_back[0].path;
-      let pan = files.pan[0].path;
-      let pan_back = files.pan_back[0].path
-      let self_pic = files.self_pic[0].path
-      let sign = files.sign[0].path
+      const _a_front = req.body.a_front;
+      const _a_back = req.body.a_back;
+      const _pan = req.body.a_front;
+      const _pan_back = req.body.pan_back;
+      const _self_pic = req.body.self_pic;
+      const _sign = req.body.sign;
+      const random_number = commonController.generateOtp()
 
+      let a_front = `kyc/a_front_${userId}_${random_number}.png`;
+      const a_front64Data = _a_front.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(a_front, a_front64Data, {
+        encoding: "base64",
+      });
       a_front = "https://asvatok.onrender.com/" + a_front;
+
+      let a_back = `kyc/a_back_${userId}_${random_number}.png`;
+      const a_back64Data = _a_back.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(a_back, a_back64Data, {
+        encoding: "base64",
+      });
       a_back = "https://asvatok.onrender.com/" + a_back;
+
+      let pan = `kyc/pan_${userId}_${random_number}.png`;
+      const pan64Data = _pan.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(pan, pan64Data, {
+        encoding: "base64",
+      });
       pan = "https://asvatok.onrender.com/" + pan;
+
+      let pan_back = `kyc/pan_back_${userId}_${random_number}.png`;
+      const pan_back64Data = _pan_back.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(pan_back, pan_back64Data, {
+        encoding: "base64",
+      });
       pan_back = "https://asvatok.onrender.com/" + pan_back;
+
+      let self_pic = `kyc/self_pic_${userId}_${random_number}.png`;
+      const self_pic64Data = _self_pic.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(self_pic, self_pic64Data, {
+        encoding: "base64",
+      });
       self_pic = "https://asvatok.onrender.com/" + self_pic;
+
+      let sign = `kyc/sign_${userId}_${random_number}.png`;
+      const sign64Data = _sign.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(sign, sign64Data, {
+        encoding: "base64",
+      });
       sign = "https://asvatok.onrender.com/" + sign;
+
       await codeController.kyc({ userId, name, address, number, id_num, type, a_front, a_back, pan, pan_back, self_pic, sign }, res);
     } catch (e) {
       console.warn(e);
