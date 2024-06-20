@@ -339,7 +339,19 @@ class userController {
     }
   }
 
-
+  async get_product(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const { oldPassword, password } = req.body;
+    try {
+      await codeController.get_product(
+        { userId },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
 
 }
 

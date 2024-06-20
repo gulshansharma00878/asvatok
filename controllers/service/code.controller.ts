@@ -393,6 +393,18 @@ class codeController {
 
     }
   }
+
+
+  async get_product(payload: any, res: Response) {
+    const { userId } = payload
+    try {
+      const get_data = await MyQuery.query(`select * from products`, { type: QueryTypes.SELECT })
+      commonController.successMessage(get_data, "products Data", res)
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
+    }
+  }
 }
 
 export default new codeController();

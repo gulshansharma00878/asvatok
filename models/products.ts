@@ -35,7 +35,7 @@ interface UsersAttributes {
   instock: string;
   keyword: string;
   hidden: boolean;
-
+  approved: boolean
 }
 
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
@@ -72,6 +72,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     instock!: string;
     keyword!: string;
     hidden!: boolean;
+    approved!: boolean
 
 
     static associate(models: any) {
@@ -116,6 +117,8 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       instock: { type: DataTypes.STRING },
       keyword: { type: DataTypes.STRING },
       hidden: { type: DataTypes.BOOLEAN },
+  approved: { type: DataTypes.BOOLEAN },
+
     },
     {
       sequelize,
