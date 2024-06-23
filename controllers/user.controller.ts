@@ -46,7 +46,7 @@ class userController {
     try {
       const _a_front = req.body.a_front;
       const _a_back = req.body.a_back;
-      const _pan = req.body.a_front;
+      const _pan = req.body.pan;
       const _pan_back = req.body.pan_back;
       const _self_pic = req.body.self_pic;
       const _sign = req.body.sign;
@@ -146,10 +146,20 @@ class userController {
     const files = (req as any)?.files;
 
     try {
-      let pic = files.pic[0].path;
-      pic = "https://asvatok.onrender.com/" + pic;
+      const _image = req.body.image;
+      let image = `profile/profile_${userId}.png`;
+      const image64Data = _image.replace(
+        /^data:([A-Za-z-+/]+);base64,/,
+        ""
+      );
+      fs.writeFileSync(image, image64Data, {
+        encoding: "base64",
+      });
+      image = "https://asvatok.onrender.com/" + image;
+      
+     
 
-      await codeController.add_profile({ userId, aboutMe, wallet, pic }, res);
+      await codeController.add_profile({ userId, aboutMe, wallet, image }, res);
     } catch (e) {
       console.warn(e);
       commonController.errorMessage(`${e}`, res);
@@ -184,10 +194,9 @@ class userController {
 
   async get_profile(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const { oldPassword, password } = req.body;
     try {
       await codeController.get_profile(
-        { userId, password, oldPassword },
+        { userId },
         res
       );
     } catch (e) {
@@ -209,7 +218,6 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
-
   async add_product(req: Request, res: Response) {
     const userId = (req as any).user.id;
     const {
@@ -241,62 +249,22 @@ class userController {
       hidden
     } = req.body;
     try {
-      const _image1 = req.body.image1;
-      const _image2 = req.body.image2;
-      const _image3 = req.body.image3;
-      const _image4 = req.body.image4;
-      const _image5 = req.body.image5;
-      const random_number = commonController.generateOtp()
-
-      let image1 = `productimage/image1_${userId}_${random_number}.png`;
-      const image164Data = _image1.replace(
-        /^data:([A-Za-z-+/]+);base64,/,
-        ""
-      );
-      fs.writeFileSync(image1, image164Data, {
-        encoding: "base64",
-      });
-      image1 = "https://asvatok.onrender.com/" + image1;
-
-      let image2 = `productimage/image2_${userId}_${random_number}.png`;
-      const image264Data = _image2.replace(
-        /^data:([A-Za-z-+/]+);base64,/,
-        ""
-      );
-      fs.writeFileSync(image2, image264Data, {
-        encoding: "base64",
-      });
-      image2 = "https://asvatok.onrender.com/" + image2;
-
-      let image3 = `productimage/image3_${userId}_${random_number}.png`;
-      const image364Data = _image3.replace(
-        /^data:([A-Za-z-+/]+);base64,/,
-        ""
-      );
-      fs.writeFileSync(image3, image364Data, {
-        encoding: "base64",
-      });
-      image3 = "https://asvatok.onrender.com/" + image3;
-
-      let image4 = `productimage/image4_${userId}_${random_number}.png`;
-      const image464Data = _image4.replace(
-        /^data:([A-Za-z-+/]+);base64,/,
-        ""
-      );
-      fs.writeFileSync(image4, image464Data, {
-        encoding: "base64",
-      });
-      image4 = "https://asvatok.onrender.com/" + image4;
-
-      let image5 = `productimage/image5_${userId}_${random_number}.png`;
-      const image564Data = _image5.replace(
-        /^data:([A-Za-z-+/]+);base64,/,
-        ""
-      );
-      fs.writeFileSync(image5, image564Data, {
-        encoding: "base64",
-      });
-      image5 = "https://asvatok.onrender.com/" + image5;
+      const images = ['image1', 'image2', 'image3', 'image4', 'image5'];
+      const imageUrls:any[] = [];
+      const random_number = commonController.generateOtp();
+  
+      for (const img of images) {
+        const _image = req.body[img];
+        if (_image) {
+          let imageFilename = `productimage/${img}_${userId}_${random_number}.png`;
+          const image64Data = _image.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+          fs.writeFileSync(imageFilename, image64Data, { encoding: "base64" });
+          imageUrls.push(`https://asvatok.onrender.com/${imageFilename}`);
+        } else {
+          imageUrls.push(""); // Push an empty string if the image is not present
+        }
+      }
+  
       let videoUrl = "";
       if (video) {
         const videoFilename = `productvideo/video_${userId}_${random_number}.mp4`;
@@ -305,8 +273,9 @@ class userController {
         videoUrl = "https://asvatok.onrender.com/" + videoFilename;
       }
   
-
-      await codeController.add_product({ userId,sku_code,
+      await codeController.add_product({
+        userId,
+        sku_code,
         name,
         description,
         issue_year,
@@ -331,12 +300,15 @@ class userController {
         type_series,
         instock,
         keyword,
-        hidden , image1, image2, image3, image4, image5}, res);
+        hidden,
+        images: [imageUrls[0],imageUrls[1], imageUrls[2],imageUrls[3],imageUrls[4]],
+      }, res);
     } catch (e) {
       console.warn(e);
       commonController.errorMessage(`${e}`, res);
     }
   }
+  
 
   async get_product(req: Request, res: Response) {
     const userId = (req as any).user?.id;

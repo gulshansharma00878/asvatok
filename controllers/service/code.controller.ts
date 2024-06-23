@@ -245,7 +245,7 @@ class codeController {
 
   async add_profile(payload: any, res: Response) {
     try {
-      const { userId, aboutMe, wallet, pic } = payload
+      const { userId, aboutMe, wallet, image } = payload
 
       const checkData = await db.users.findOne({
         where: {
@@ -254,7 +254,7 @@ class codeController {
       })
       if (checkData) {
         const add_pro = await db.profiles.create({
-          userId, aboutMe, wallet, pic
+          userId, aboutMe, wallet, image
         })
         commonController.successMessage(add_pro, "Profile added", res)
       } else {
@@ -360,8 +360,9 @@ class codeController {
         sold,
         type_series,
         instock,
-        keyword,
-        hidden, image1, image2, image3, image4, image5 } = payload
+        keyword, images} = payload
+
+        const _images = JSON.stringify(images)
       const add_pro = await db.products.create({
         userId, sku_code,
         name,
@@ -388,7 +389,7 @@ class codeController {
         type_series,
         instock,
         keyword,
-        hidden, image1, image2, image3, image4, image5, approved: 0
+        hidden: 1,images: _images, approved: 0
       })
       commonController.successMessage(add_pro, "Profile added", res)
 
@@ -402,7 +403,7 @@ class codeController {
   async get_product(payload: any, res: Response) {
     const { userId } = payload
     try {
-      const get_data = await MyQuery.query(`select * from products`, { type: QueryTypes.SELECT })
+      const get_data = await MyQuery.query(`select * from products where hidden = 0`, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)

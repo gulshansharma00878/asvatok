@@ -1,10 +1,10 @@
 openapi: 3.0.0
 info:
-  title: Inn Services API
-  description: API for Inn Services API by Gulshan Sharma
+  title: Asvatok API
+  description: API for Asvatok API by Gulshan Sharma
   version: 1.0.0
 servers:
-  - url: https://catapi.thecatsinn.com
+  - url: https://asvatok.onrender.com
   - url: http://localhost:4209
     description: Main server
 components:
@@ -67,72 +67,29 @@ paths:
                   type: string
                   minLength: 1
                   description: confirm Password.
-                # companyId:
-                #   type: string
-                #   minLength: 1
-                #   description: Company Id.
-                # roleId:
-                #   type: string
-                #   minLength: 1
-                #   description: role Id.
-                # packageId:
-                #   type: string
-                #   minLength: 1
-                #   description: Package Id.
+                name:
+                  type: string
+                  minLength: 1
+                  description: User name.
+                mobile:
+                  type: string
+                  minLength: 1
+                  description: Mobile number.
               required:
                 - email
                 - password
                 - confirmPassword
-                # - companyId
-                # - roleId
-                # - packageId
+                - name
+                - mobile
       responses:
         '200':
           description: OK
         '400':
           description: Bad Request
 
-  /api/v1/auth/verifyforgetpassword:
+  /api/v1/auth/resend_email:
     post:
-      summary: User password reset  
-      tags:
-        - User
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  minLength: 1
-                  description: User email address.
-                otp:
-                  type: string
-                  minLength: 1
-                  description: otp.
-                password:
-                  type: string
-                  minLength: 1
-                  description: new password.
-                confirmPassword:
-                  type: string
-                  minLength: 1
-                  description: confirm password.
-              required:
-                - email
-                - otp
-                - password
-                - confirmPassword
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-
-  /api/v1/auth/forgetpassword:
-    post:
-      summary: User password reset  
+      summary: resend email   
       tags:
         - User
       requestBody:
@@ -153,58 +110,73 @@ paths:
         '400':
           description: Bad Request
 
-  /api/v1/member/addcompanyregistrations:
+  /api/v1/member/kyc:
     post:
-      summary: Add companies
+      summary: Add Kyc
       tags:
-        - Company
+        - Kyc
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
-                companyName:
+                name:
                   type: string
                   minLength: 1
-                  description: Name of Company.
+                  description: Name of user.
                 address:
                   type: string
                   minLength: 1
-                  description: address of company.
-                city:
+                  description: Address of user.
+                number:
                   type: string
                   minLength: 1
-                  description: city.
-                state:
+                  description: Number of user.
+                id_num:
                   type: string
                   minLength: 1
-                  description: state.
-                country:
+                  description: Id number of user document.
+                type:
                   type: string
                   minLength: 1
-                  description: country.
-                phone:
+                  description: type of user document.
+                a_front:
                   type: string
                   minLength: 1
-                  description: phone.
-                website:
+                  description: Front side of user document.
+                a_back:
                   type: string
                   minLength: 1
-                  description: Website.
-                logo:
+                  description: Back side of user document.
+                pan:
                   type: string
-                  format: binary
-                  description: Select File (image).
+                  minLength: 1
+                  description: Pan front of user document.
+                pan_back:
+                  type: string
+                  minLength: 1
+                  description: Pan back of user document.
+                self_pic:
+                  type: string
+                  minLength: 1
+                  description: Selfie of user.
+                sign:
+                  type: string
+                  minLength: 1
+                  description: Signature of user.
               required:
-                - companyName
+                - name
                 - address
-                - city
-                - state
-                - country
-                - phone
-                - website
-                - logo
+                - number
+                - id_num
+                - type
+                - a_front
+                - a_back
+                - pan
+                - pan_back
+                - self_pic
+                - sign
       security:
         - BearerAuth: []
       responses:
@@ -215,53 +187,11 @@ paths:
         '500':
           description: Internal Server Error OR authorization header must be provided
 
-
- 
-  /api/v1/auth/verifyuserotp:
+  /api/v1/member/get_kyc_status:
     post:
-      summary: User verification
+      summary: Get kyc status
       tags:
-        - User
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  minLength: 1
-                  description: User email address.
-                otp:
-                  type: string
-                  minLength: 1
-                  description: Verification Otp.
-              required:
-                - email
-                - otp
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-
-  /api/v1/member/addrole:
-    post:
-      summary: Add Roles
-      tags:
-        - Role
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                roleName:
-                  type: string
-                  minLength: 1
-                  description: Name of role.
-              required:
-                - roleName
+        - Kyc
       security:
         - BearerAuth: []
       responses:
@@ -272,317 +202,75 @@ paths:
         '500':
           description: Internal Server Error OR authorization header must be provided
 
-  /api/v1/member/choosepackage:
-    post:
-      summary: choose package
-      tags:
-        - Company
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                packageId:
-                  type: string
-                  minLength: 1
-                  description: Name of role.
-              required:
-                - packageId
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/auth/getroles:
-    post:
-      summary: Returns All roles associated
-      tags:
-        - Role
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/getrolesbyid:
-    post:
-      summary: Returns roles associated by id
-      tags:
-        - Role
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: Id of Role.
-              required:
-                - id
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/editrole:
-    post:
-      summary: Update edit role 
-      tags:
-        - Role
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: Id of Role.
-                roleName:
-                  type: string
-                  minLength: 1
-                  description: Name of Roel.
-              required:
-                - id
-                - roleName
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-
-  /api/v1/member/deleterole:
-    post:
-      summary: Delete Role
-      tags:
-        - Role
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: Id of role to be deleted.
-              required:
-                - id
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/member/addpackage:
-    post:
-      summary: Add All Packages
-      tags:
-        - Package
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                package_name:
-                  type: string
-                  minLength: 1
-                  description: Name of Package.
-                package_price:
-                  type: string
-                  minLength: 1
-                  description: Package Price.
-                duration:
-                  type: string
-                  minLength: 1
-                  description: Duration.
-              required:
-                - package_name
-                - package_price
-                - duration
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/auth/getpackage:
-    post:
-      summary: Returns All Packages.
-      tags:
-        - Package
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/editpackage:
-    post:
-      summary: Update edit package 
-      tags:
-        - Package
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: Id of Role.
-                package_name:
-                  type: string
-                  minLength: 1
-                  description: Name of Package.
-                package_price:
-                  type: string
-                  minLength: 1
-                  description: Package Price.
-                duration:
-                  type: string
-                  minLength: 1
-                  description: Duration.
-              required:
-                - id
-                - package_name
-                - package_price
-                - duration
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-
-  /api/v1/member/deletepackage:
-    post:
-      summary: Delete package
-      tags:
-        - Package
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: Id of package to be deleted.
-              required:
-                - id
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
- 
-
-  /api/v1/member/getcompanysubusers:
-    post:
-      summary: Returns All users of company.
-      tags:
-        - Company
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                companyName:
-                  type: string
-                  minLength: 1
-                  description: companyName to get all sub users.
-              required:
-                - companyName
-      security:
-       - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/addprofile:
+  /api/v1/member/add_profile:
     post:
       summary: Add Profile
       tags:
         - Profile
       requestBody:
         content:
-         multipart/form-data:
+          application/json:
              schema:
                type: object
                properties:
-                 firstName:
+                 aboutMe:
                    type: string
                    minLength: 1
-                   description: First name of customer.
-                 lastName:
+                   description: About me.
+                 wallet:
                    type: string
                    minLength: 1
-                   description: last name of customer.
-                 number:
-                   type: string
-                   minLength: 1
-                   description: number of customer.
-                 address:
-                   type: string
-                   minLength: 1
-                   description: address of customer.
-                 city:
-                   type: string
-                   minLength: 1
-                   description: city of customer.
-                 state:
-                   type: string
-                   minLength: 1
-                   description: state of customer.
-                 zipCode:
-                   type: string
-                   minLength: 1
-                   description: zipcode of customer.
+                   description: Wallet.
                  image:
                   type: string
-                  format: binary
-                  description: Select File (image).
+                  format: 1
+                  description: profile pic.
                required:
-                 - firstName
-                 - lastName
-                 - number
-                 - address
-                 - city
-                 - state
-                 - zipCode
+                 - aboutMe
+                 - wallet
+                 - image
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/edit_profile:
+    post:
+      summary: edit Profile
+      tags:
+        - Profile
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                 id:
+                   type: number
+                   minLength: 1
+                   description: id of profile.
+                 aboutMe:
+                   type: string
+                   minLength: 1
+                   description: About me.
+                 wallet:
+                   type: string
+                   minLength: 1
+                   description: Wallet.
+                 image:
+                  type: string
+                  format: 1
+                  description: profile pic.
+               required:
+                 - id
+                 - aboutMe
+                 - wallet
+                 - image
       security:
        - BearerAuth: []
       responses:
@@ -604,7 +292,7 @@ paths:
         '200':
           description: OK
 
-  /api/v1/member/updatepassword:
+  /api/v1/member/changepassword:
     post:
       summary: Update password.
       tags:
@@ -636,1526 +324,212 @@ paths:
         '500':
           description: Internal Server Error OR authorization header must be provided
 
-
-  /api/v1/auth/getallusersofcompany:
+  /api/v1/member/add_product:
     post:
-      summary: Returns All users of specific company.
+      summary: Add Products.
       tags:
-        - User
+        - Products
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                companyId: 
+                sku_code: 
                   type: string
-                  minLength: 1
-                  description: companyId .
-              required:
-                - companyId
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/addinventory:
-    post:
-      summary: Add inventory.
-      tags:
-        - Inventory
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                code: 
-                  type: string
-                  minLength: 1
-                  description: code.
+                  description: SKU code
                 name: 
                   type: string
-                  minLength: 1
-                  description: name.
-                categoryId: 
-                  type: string
-                  minLength: 1
-                  description: categoryId.
-                onHand: 
-                  type: string
-                  minLength: 1
-                  description: onHand.
-                low: 
-                  type: string
-                  minLength: 1
-                cost: 
-                  type: string
-                  minLength: 1
-                retail: 
-                  type: string
-                  minLength: 1
-                recoming: 
-                  type: boolean
-                  minLength: 1
-                vendorItem: 
-                  type: string
-                  minLength: 1
-                markUp: 
-                  type: string
-                  minLength: 1
+                  description: Product name
                 description: 
                   type: string
-                  minLength: 1
-                invoiceMessage: 
+                  description: Product description
+                issue_year: 
                   type: string
-                  minLength: 1
-                commissionable: 
+                  description: Year of issue
+                item_condition: 
                   type: string
-                  minLength: 1
-                product: 
+                  description: Condition of the item
+                catagory: 
                   type: string
-                  minLength: 1
-                service: 
+                  description: Product category
+                varities: 
                   type: string
-                  minLength: 1
-                commissionTypeId: 
-                  type: boolean
-                  minLength: 1
-                percentageRate: 
-                  type: string
-                  minLength: 1
-                incomeAccount: 
-                  type: string
-                  minLength: 1
-                expirationDate: 
-                  type: string
-                  minLength: 1
-                vendorId: 
-                  type: string
-                  minLength: 1
-              required: 
-                - code
-                - name
-                - categoryId
-                - onHand
-                - low
-                - cost
-                - retail
-                - recoming
-                - vendorItem
-                - markUp
-                - description
-                - invoiceMessage
-                - commissionable
-                - product
-                - service
-                - commissionTypeId
-                - percentageRate
-                - incomeAccount
-                - expirationDate
-                - vendorId
-      security:  
-        - BearerAuth: []
-      responses:
-        '200':
-        description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-
-
-  /api/v1/member/updateinventory:
-    post:
-      summary: Update inventory.
-      tags:
-        - Inventory
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: id of inventory
-                code: 
-                  type: string
-                  minLength: 1
-                  description: code.
-                name: 
-                  type: string
-                  minLength: 1
-                  description: name.
-                categoryId: 
-                  type: string
-                  minLength: 1
-                  description: categoryId.
-                onHand: 
-                  type: string
-                  minLength: 1
-                  description: onHand.
-                low: 
-                  type: string
-                  minLength: 1
-                cost: 
-                  type: string
-                  minLength: 1
-                retail: 
-                  type: string
-                  minLength: 1
-                recoming: 
-                  type: string
-                  minLength: 1
-                vendorItem: 
-                  type: string
-                  minLength: 1
-                markUp: 
-                  type: string
-                  minLength: 1
-                description: 
-                  type: string
-                  minLength: 1
-                invoiceMessage: 
-                  type: string
-                  minLength: 1
-                commissionable: 
-                  type: string
-                  minLength: 1
-                product: 
-                  type: string
-                  minLength: 1
-                service: 
-                  type: string
-                  minLength: 1
-                commissionTypeId: 
-                  type: string
-                  minLength: 1
-                percentageRate: 
-                  type: string
-                  minLength: 1
-                incomeAccount: 
-                  type: string
-                  minLength: 1
-                expirationDate: 
-                  type: string
-                  minLength: 1
-                vendorId: 
-                  type: string
-                  minLength: 1
-              required: 
-                - id
-                - code
-                - name
-                - categoryId
-                - onHand
-                - low
-                - cost
-                - retail
-                - recoming
-                - vendorItem
-                - markUp
-                - description
-                - invoiceMessage
-                - commissionable
-                - product
-                - service
-                - commissionTypeId
-                - percentageRate
-                - incomeAccount
-                - expirationDate
-                - vendorId
-      security:  
-        - BearerAuth: []
-      responses:
-        '200':
-        description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/member/deleteinventory:
-    post:
-      summary: delete inventory.
-      tags:
-        - Inventory
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id: 
-                  type: string
-                  minLength: 1
-                  description: id.
-              required: 
-                - id
-      security:  
-        - BearerAuth: []
-      responses:
-        '200':
-        description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-
-  /api/v1/member/getinventory:
-    post:
-      summary: Return Inventory.
-      tags:
-        - Inventory
-      security:
-        - BearerAuth: []
-      responses: 
-        '200':
-          description: OK
-
-  /api/v1/member/getinventorybyid:
-    post:
-      summary: Return One specific Inventory.
-      tags:
-        - Inventory
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id: 
-                  type: string
-                  minLength: 1
-                  description: id.
-              required: 
-                - id
-      security:
-        - BearerAuth: []
-      responses: 
-        '200':
-          description: OK
-
-  /api/v1/member/getselectedvendorsofinventory:
-    post:
-      summary: Return ALl specific Vendors of inventory.
-      tags:
-        - Inventory
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                inventoryId: 
-                  type: string
-                  minLength: 1
-                  description: id.
-              required: 
-                - inventoryId
-      security:
-        - BearerAuth: []
-      responses: 
-        '200':
-          description: OK
-
-  /api/v1/member/getallvendors:
-    post:
-      summary: Return all vendors.
-      tags:
-        - Vendor
-      security:
-        - BearerAuth: []
-      responses: 
-        '200':
-          description: OK
-
-  /api/v1/member/getvendorbyid:
-    post:
-      summary: Return One specific vendors.
-      tags:
-        - Vendor
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id: 
-                  type: string
-                  minLength: 1
-                  description: id.
-              required: 
-                - id
-      security:
-        - BearerAuth: []
-      responses: 
-        '200':
-          description: OK
-
-  /api/v1/member/addvendor:
-    post:
-      summary: Add Vendor.
-      tags:
-        - Vendor
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                vendor: 
-                  type: string
-                  minLength: 1
-                  description: vendor.
-                contact: 
-                  type: string
-                  minLength: 1
-                  description: contact.
-                addressOne: 
-                  type: string
-                  minLength: 1
-                  description: addressOne.
-                addressTwo: 
-                  type: string
-                  minLength: 1
-                  description: addressTwo.
+                  description: Varieties
                 city: 
                   type: string
-                  minLength: 1
-                  description: city.
-                state: 
+                  description: City
+                ruler: 
                   type: string
-                  minLength: 1
-                  description: state.
-                zip: 
+                  description: Ruler
+                denomination: 
                   type: string
-                  minLength: 1
-                  description: zip.
-                phone: 
+                  description: Denomination
+                signatory: 
                   type: string
-                  minLength: 1
-                  description: phone.
-                fax: 
+                  description: Signatory
+                rarity: 
                   type: string
-                  minLength: 1
-                  description: fax.
-                email: 
+                  description: Rarity
+                specification: 
                   type: string
-                  minLength: 1
-                  description: email.
-                account: 
+                  description: Specification
+                metal: 
                   type: string
-                  minLength: 1
-                  description: account.
-                memo: 
+                  description: Metal
+                remarks: 
                   type: string
-                  minLength: 1
-                  description: memo.
-              required: 
-                - vendor
-                - contact
-                - addressOne
-                - addressTwo
-                - city
-                - state
-                - zip
-                - phone
-                - fax
-                - email
-                - account
-                - memo
+                  description: Remarks
+                quantity: 
+                  type: string
+                  description: Quantity
+                custom_url: 
+                  type: string
+                  description: Custom URL
+                video: 
+                  type: string
+                  description: Video URL
+                current_price: 
+                  type: string
+                  description: Current price
+                initial_price: 
+                  type: string
+                  description: Initial price
+                note: 
+                  type: string
+                  description: Note
+                sold: 
+                  type: string
+                  description: Sold status
+                type_series: 
+                  type: string
+                  description: Type series
+                instock: 
+                  type: string
+                  description: In stock status
+                keyword: 
+                  type: string
+                  description: Keyword
+                images: 
+                  type: array
+                  description: Array of image URLs
+                  items:
+                    type: string
+      #         required: 
+      #           - sku_code
+      #           - name
+      #           - description
+      #           - issue_year
+      #           - item_condition
+      #           - catagory
+      #           - varities
+      #           - city
+      #           - ruler
+      #           - denomination
+      #           - signatory
+      #           - rarity
+      #           - specification
+      #           - metal
+      #           - remarks
+      #           - quantity
+      #           - custom_url
+      #           - current_price
+      #           - initial_price
+      #           - note
+      #           - sold
+      #           - type_series
+      #           - instock
+      #           - keyword
+      #           - hidden
       security:  
-        - BearerAuth: []
-      responses:
-        '200':
-        description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/member/updatevendor:
-    post:
-      summary: update Vendor.
-      tags:
-        - Vendor
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id: 
-                  type: string
-                  minLength: 1
-                  description: id.
-                vendor: 
-                  type: string
-                  minLength: 1
-                  description: vendor.
-                contact: 
-                  type: string
-                  minLength: 1
-                  description: contact.
-                addressOne: 
-                  type: string
-                  minLength: 1
-                  description: addressOne.
-                addressTwo: 
-                  type: string
-                  minLength: 1
-                  description: addressTwo.
-                city: 
-                  type: string
-                  minLength: 1
-                  description: city.
-                state: 
-                  type: string
-                  minLength: 1
-                  description: state.
-                zip: 
-                  type: string
-                  minLength: 1
-                  description: zip.
-                phone: 
-                  type: string
-                  minLength: 1
-                  description: phone.
-                fax: 
-                  type: string
-                  minLength: 1
-                  description: fax.
-                email: 
-                  type: string
-                  minLength: 1
-                  description: email.
-                account: 
-                  type: string
-                  minLength: 1
-                  description: account.
-                memo: 
-                  type: string
-                  minLength: 1
-                  description: memo.
-              required: 
-                - id
-                - vendor
-                - contact
-                - addressOne
-                - addressTwo
-                - city
-                - state
-                - zip
-                - phone
-                - fax
-                - email
-                - account
-                - memo
-      security:  
-        - BearerAuth: []
-      responses:
-        '200':
-        description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/member/deletevendor:
-    post:
-      summary: delete Vendor.
-      tags:
-        - Vendor
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id: 
-                  type: string
-                  minLength: 1
-                  description: id.
-              required: 
-                - id
-      security:  
-        - BearerAuth: []
-      responses:
-        '200':
-        description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/member/getallcategories:
-    post:
-      summary: Return all categories.
-      tags:
-        - Category
-      security:
         - BearerAuth: []
       responses:
         '200':
           description: OK
-          
-  /api/v1/member/getcategorybyid:
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error OR authorization header must be provided
+
+  /api/v1/member/get_product:
     post:
-      summary: Return One specific category.
+      summary: Return Products.
       tags:
-        - Category
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id: 
-                  type: string
-                  minLength: 1
-                  description: id.
-              required: 
-                - id
+        - Products
       security:
         - BearerAuth: []
       responses: 
         '200':
           description: OK
 
-  /api/v1/member/addcategory:
+  /api/v1/member/buy_request:
     post:
-      summary: Add category.
+      summary: Add Buy request.
       tags:
-        - Category
+        - Trades
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                category: 
+                product_id: 
                   type: string
                   minLength: 1
-                  description: category.
-                description: 
+                  description: product id.
+                quantity: 
                   type: string
                   minLength: 1
-                  description: description.
-              required: 
-                - category
-                - description
-      security:  
-        - BearerAuth: []
-      responses:
-        '200':
-        description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/member/updatecategory:
-    post:
-      summary: update catagory.
-      tags:
-        - Category
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id: 
+                  description: quantity.
+                price: 
                   type: string
                   minLength: 1
-                  description: id.
-                category: 
-                  type: string
-                  minLength: 1
-                  description: category.
-                description: 
-                  type: string
-                  minLength: 1
-                  description: description.
+                  description: price.
               required: 
                 - id
-                - category
-                - description
-      security:  
-        - BearerAuth: []
-      responses:
-        '200':
-        description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/member/deletecategory:
-    post:
-      summary: delete catagory.
-      tags:
-        - Category
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id: 
-                  type: string
-                  minLength: 1
-                  description: id.
-              required: 
-                - id
-      security:  
-        - BearerAuth: []
-      responses:
-        '200':
-        description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/member/subuserregistration:
-    post:
-      summary: Sub User registration
-      tags:
-        - Sub User
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  minLength: 1
-                  description: User email address.
-                password:
-                  type: string
-                  minLength: 1
-                  description: User password.
-                confirmPassword:
-                  type: string
-                  minLength: 1
-                  description: confirm Password.
-                companyId:
-                  type: string
-                  minLength: 1
-                  description: Company Id.
-                roleId:
-                  type: string
-                  minLength: 1
-                  description: role Id.
-                # packageId:
-                #   type: string
-                #   minLength: 1
-                #   description: Package Id.
-              required:
-                - email
-                - password
-                - confirmPassword
-                - companyId
-                - roleId
-                # - packageId
+                - quantity
+                - price
       security:
         - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-
-  /api/v1/member/verifysubuser:
-    post:
-      summary: User verification
-      tags:
-        - Sub User
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  minLength: 1
-                  description: User email address.
-                otp:
-                  type: string
-                  minLength: 1
-                  description: Verification Otp.
-              required:
-                - email
-                - otp
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-
-  /api/v1/member/getallcompanies:
-    post:
-      summary: Returns All companies 
-      tags:
-        - Company
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                companyName:
-                  type: string
-                  minLength: 1
-                  description: Name of company.
-      security:
-        - BearerAuth: []  
-      responses:
+      responses: 
         '200':
           description: OK
 
-  /api/v1/member/getallcompaniesmainbranch:
+  /api/v1/member/get_buy_requests:
     post:
-      summary: Returns All main branch
+      summary: Return all buy_requests.
       tags:
-        - Company
-      security:
-        - BearerAuth: []  
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/addcompanylocation:
-    post:
-      summary: Add company's location
-      tags:
-        - Company
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                address:
-                  type: string
-                  minLength: 1
-                  description: address of company.
-                city:
-                  type: string
-                  minLength: 1
-                  description: city.
-                state:
-                  type: string
-                  minLength: 1
-                  description: state.
-                country:
-                  type: string
-                  minLength: 1
-                  description: country.
-                phone:
-                  type: string
-                  minLength: 1
-                  description: phone.
-                website:
-                  type: string
-                  minLength: 1
-                  description: Website.
-              required:
-                - address
-                - city
-                - state
-                - country
-                - phone
-                - website
+        - Trades
       security:
         - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-        '500':
-          description: Internal Server Error OR authorization header must be provided
-
-  /api/v1/member/updatecompanyprofile:
-    post:
-      summary: update Profile
-      tags:
-        - Company Profile
-      requestBody:
-        content:
-          multipart/form-data:
-             schema:
-              type: object
-              properties:
-               id: 
-                 type: string
-                 minLength: 1
-                 description: Profile Id
-               companyName:
-                 type: string
-                 minLength: 1
-                 description: First name of customer.
-               address:
-                 type: string
-                 minLength: 1
-                 description: address of customer.
-               city:
-                 type: string
-                 minLength: 1
-                 description: last name of customer.
-               state:
-                 type: string
-                 minLength: 1
-                 description: number of customer.
-               country:
-                 type: string
-                 minLength: 1
-                 description: city of customer.
-               phone:
-                 type: string
-                 minLength: 1
-                 description: state of customer.
-               website:
-                 type: string
-                 minLength: 1
-                 description: zipcode of customer.
-               logo:
-                type: string
-                format: binary
-                description: Select File (image).
-              required:
-                - id
-                - companyName
-                - address
-                - city
-                - state
-                - country
-                - phone
-                - website
-      security:
-       - BearerAuth: []
-      responses:
-        '200':
-         description: OK
-        '400':
-         description: Bad Request
-        '500':
-         description: Internal Server Error OR authorization header must be provided.
-
-  /api/v1/member/getcompanyprofile:
-    post:
-      summary: Return profile.
-      tags:
-        - Company Profile
-      security:
-        - BearerAuth: []
-      responses:
+      responses: 
         '200':
           description: OK
 
-  /api/v1/member/getcompanylocations:
+  /api/v1/member/bulk_product_data:
     post:
-      summary: Return profile.
+      summary: Add bulk data buy adding csv file.
       tags:
-        - Company
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                companyName:
-                  type: string
-                  minLength: 1
-                  description: companyName .
-              required:
-                - companyName
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-
-  /api/v1/member/cancelreservationservice:
-    post:
-      summary: cancel reservation.
-      tags:
-        - Reservations
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: id of reservation .
-              required:
-                - id
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-
-
-  /api/v1/member/addcatreservationservice:
-    post:
-      summary: Add cat `service`
-      tags:
-        - Reservations
-      requestBody:
-        content:
-          application/json:
-             schema:
-              type: object
-              properties:
-                petId: 
-                  type: string
-                  minLength: 1
-                  description: Pet id
-                serviceName: 
-                  type: string
-                  minLength: 1
-                  description: serviceName
-                suitOption:
-                  type: string
-                  minLength: 1
-                  description: suitOption.
-                bath:
-                  type: string
-                  minLength: 1
-                  description: bath.
-                bathOptions:
-                  type: string
-                  minLength: 1
-                  description: bathOptions.
-                shampoo:
-                  type: string
-                  minLength: 1
-                  description: shampoo.
-                nailCare:
-                  type: string
-                  minLength: 1
-                  description: nailCare.
-                nailCareOption:
-                  type: string
-                  minLength: 1
-                  description: nailCareOption.
-                firstNailColor:
-                  type: string
-                  minLength: 1
-                  description: firstNailColor.
-                secondNailColor:
-                  type: string
-                  minLength: 1
-                  description: secondNailColor.
-                shave:
-                  type: string
-                  minLength: 1
-                  description: shave.
-                bathOptionsForShave:
-                  type: string
-                  minLength: 1
-                  description: bathOptionsForShave.
-                nailTrimOptionsForShave:
-                  type: string
-                  minLength: 1
-                  description: nailTrimOptionsForShave.
-                tailOptionsForShave:
-                  type: string
-                  minLength: 1
-                  description: tailOptionsForShave.
-                medication:
-                  type: string
-                  minLength: 1
-                  description: medication.
-                transportation:
-                  type: string
-                  minLength: 1
-                  description: transportation.
-                checkIn:
-                  type: string
-                  minLength: 1
-                  description: checkIn.
-                checkOut:
-                  type: string
-                  minLength: 1
-                  description: checkOut
-                street:
-                  type: string
-                  minLength: 1
-                  description: street
-                state:
-                  type: string
-                  minLength: 1
-                  description: state
-                zipCode:
-                  type: string
-                  minLength: 1
-                  description: zipCode
-                city:
-                  type: string
-                  minLength: 1
-                  description: city
-                timesPerDay:
-                  type: string
-                  minLength: 1
-                  description: timesPerDay
-                keysOrDrop:
-                  type: string
-                  minLength: 1
-                  description: keysOrDrop
-                plantsWatering:
-                  type: string
-                  minLength: 1
-                  description: plantsWatering
-                mailBrought:
-                  type: string
-                  minLength: 1
-                  description: mailBrought
-                foodStorage:
-                  type: string
-                  minLength: 1
-                  description: foodStorage
-                whereTooFindLitterAndLitterBox:
-                  type: string
-                  minLength: 1
-                  description: whereTooFindLitterAndLitterBox
-                toysForYourCat:
-                  type: string
-                  minLength: 1
-                  description: toysForYourCat
-                feedingInstruction:
-                  type: string
-                  minLength: 1
-                  description: feedingInstruction
-                specialInstruction:
-                  type: string
-                  minLength: 1
-                  description: specialInstruction
-                vaccinationDate:
-                  type: string
-                  minLength: 1
-                  description: vaccinationDate
-                vaccinationExpirationDate:
-                  type: string
-                  minLength: 1
-                  description: vaccinationExpirationDate
-                recordDeliveryMethod:
-                  type: string
-                  minLength: 1
-                  description: recordDeliveryMethod
-                dryFood:
-                  type: string
-                  minLength: 1
-                  description: dryFood
-                wetFood:
-                  type: string
-                  minLength: 1
-                  description: wetFood
-                ownerBroughtFood:
-                  type: string
-                  minLength: 1
-                  description: ownerBroughtFood
-                specialInstructions:
-                  type: string
-                  minLength: 1
-                  description: specialInstruction for second part
-              required:
-                - petId
-                - serviceName
-      security:
-       - BearerAuth: []
-      responses:
-        '200':
-         description: OK
-        '400':
-         description: Bad Request
-        '500':
-         description: Internal Server Error OR authorization header must be provided.
-
-  /api/v1/member/getreservationsfordashboard:
-    post:
-      summary: Return checkIn and checkOut (minimal data).
-      tags:
-        - Reservations
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/getreservationsfulldata:
-    post:
-      summary: Return full data of all reservations.
-      tags:
-        - Reservations
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/getreservationsbyid:
-    post:
-      summary: Return one reservation's full Data By ID.
-      tags:
-        - Reservations
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: Reservation Id .
-              required:
-                - id
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-  # /api/v1/member/getpdf:
-  #   post:
-  #     tags:
-  #       - PDF
-  #     requestBody:
-  #       content:
-  #         application/json:
-  #           schema:
-  #             type: object
-  #             properties:
-  #               id:
-  #                 type: string
-  #                 minLength: 1
-  #                 description: Reservation Id .
-  #           required:
-  #               - id
-  #     produces:
-  #       - application/pdf
-  #     consumes:
-  #       - application/json
-  #     # parameters:
-  #     #   - name: contents
-  #     #     description: HTML content to convert to pdf
-  #     #     in:  body
-  #     # required: true
-  #     schema:
-  #         $ref: "#/definitions/pdf"
-  #     responses:
-  #       200:
-  #       description: Returns a PDF encoded in base64
-
-
-  /api/v1/member/getpdf:
-    post:
-      summary: Get Pdf.
-      tags:
-        - Pdf
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: Reservation Id .
-              required:
-                - id
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-
-  /api/v1/member/boardingcontract:
-    post:
-      summary: Boarding contract
-      tags:
-        - Contracts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                  minLength: 1
-                  description: firstName .
-                lastName:
-                  type: string
-                  minLength: 1
-                  description: lastName .
-                number:
-                  type: string
-                  minLength: 1
-                  description: number .
-                address:
-                  type: string
-                  minLength: 1
-                  description: address .
-                email:
-                  type: string
-                  minLength: 1
-                  description: email .
-                vetName:
-                  type: string
-                  minLength: 1
-                  description: vetName .
-                vetPhone:
-                  type: string
-                  minLength: 1
-                  description: vetPhone .
-                emergencyName:
-                  type: string
-                  minLength: 1
-                  description: emergencyName .
-                emergencyNumber:
-                  type: string
-                  minLength: 1
-                  description: emergencyNumber .
-                pet:
-                  type: string
-                  minLength: 1
-                  description: pet .
-                breed:
-                  type: string
-                  minLength: 1
-                  description: breed .
-                color:
-                  type: string
-                  minLength: 1
-                  description: color .
-                sex:
-                  type: string
-                  minLength: 1
-                  description: sex .
-                birthdate:
-                  type: string
-                  minLength: 1
-                  description: birthdate .
-                vaccination:
-                  type: string
-                  minLength: 1
-                  description: vaccination .
-                ownerInitials:
-                  type: string
-                  minLength: 1
-                  description: ownerInitials .
-                allergy:
-                  type: string
-                  minLength: 1
-                  description: allergy .
-                ownerInitials1:
-                  type: string
-                  minLength: 1
-                  description: ownerInitials1 .
-                ownerInitials2:
-                  type: string
-                  minLength: 1
-                  description: ownerInitials2 .
-                ownerInitials3:
-                  type: string
-                  minLength: 1
-                  description: ownerInitials3 .
-                ownerInitials4:
-                  type: string
-                  minLength: 1
-                  description: ownerInitials4 .
-                ownerInitials5:
-                  type: string
-                  minLength: 1
-                  description: ownerInitials5 .
-                date:
-                  type: string
-                  minLength: 1
-                  description: date .
-                ownerSignature:
-                  type: string
-                  minLength: 1
-                  description: ownerSignature .
-              required:
-                - firstName
-                - lastName
-                - number
-                - address
-                - email
-                - vetName
-                - vetPhone
-                - emergencyName
-                - emergencyNumber
-                - pet
-                - breed
-                - color
-                - sex
-                - birthdate
-                - vaccination
-                - ownerInitials
-                - allergy
-                - ownerInitials1
-                - ownerInitials2
-                - ownerInitials3
-                - ownerInitials4
-                - ownerInitials5
-                - date
-                - ownerSignature
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/groomingcontract:
-    post:
-      summary: Boarding contract
-      tags:
-        - Contracts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  minLength: 1
-                  description: name .
-                pet:
-                  type: string
-                  minLength: 1
-                  description: pet .
-                date:
-                  type: string
-                  minLength: 1
-                  description: date .
-                ownerSignature:
-                  type: string
-                  minLength: 1
-                  description: ownerSignature .
-              required:
-                - name
-                - pet
-                - date
-                - ownerSignature
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-
-  /api/v1/member/deleteprofile:
-    post:
-      summary: delete profile.
-      tags:
-        - Profile
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: OK
-        
-  /api/v1/member/uploadcc:
-    post:
-      summary: upload cc details
-      tags:
-        - Contracts
+        - Products
       requestBody:
         content:
           multipart/form-data:
             schema:
               type: object
               properties:
-                petId: 
-                  type: string
-                  minLength: 1
-                  description:  petId
-                reservationId:
-                  type: string
-                  minLength: 1
-                  description: reservationId.
-                firstName:
-                  type: string
-                  minLength: 1
-                  description: firstName.
-                lastName:
-                  type: string
-                  minLength: 1
-                  description: lastName.
-                cardType:
-                  type: string
-                  minLength: 1
-                  description: cardType.
-                cardHolder:
-                  type: string
-                  minLength: 1
-                  description: cardHolder.
-                date:
-                  type: string
-                  minLength: 1
-                  description: date.
-                ccAddress:
-                  type: string
-                  minLength: 1
-                  description: ccAddress.
-                cardFrontPhoto:
+                file:
                   type: string
                   format: binary
-                  description: Select File cardFrontPhoto (image).
-                cardBackPhoto:
-                  type: string
-                  format: binary
-                  description: Select File (image).
-                dlFrontPhoto:
-                  type: string
-                  format: binary
-                  description: Select File (image).
-                dlBackPhoto:
-                  type: string
-                  format: binary
-                  description: Select File (image).
-              required:
-                - petId
-                - reservationId
-                - firstName
-                - lastName
-                - cardType
-                - cardHolder
-                - date
-                - ccAddress
-                - cardFrontPhoto
-                - cardBackPhoto
-                - dlFrontPhoto
-                - dlBackPhoto
-      security:
-       - BearerAuth: []
+                  description: Select File (CSV).
+                
+              required: 
+                - file
+      security:  
+        - BearerAuth: []
       responses:
         '200':
-         description: OK
+        description: OK
         '400':
-         description: Bad Request
+          description: Bad Request
         '500':
-         description: Internal Server Error OR authorization header must be provided.
+          description: Internal Server Error OR authorization header must be provided
