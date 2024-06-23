@@ -22,33 +22,13 @@ const upload = multer({
   storage: storage,
 });
 
-const storageCc = multer.diskStorage({
-  destination: function (req: any, file: any, cb: any) {
-    cb(null, "kyc");
-  },
-  filename: function (req: any, file: any, cb: any) {
-    const userId = req.user.id; //
-    console.log(userId);
-    cb(null, `${file.fieldname}_${userId}.png`);
-  },
-});
-
-const upload_kyc = multer({
-  storage: storageCc,
-});
+const uploadFile = multer({ dest: 'file/' });
 
 const router = express.Router();
 
 router.use(bodyParser.json({ limit: '100mb' }));
 router.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
-const cpUpload = upload_kyc.fields([
-  { name: "a_front", maxCount: 1 },
-  { name: "a_back", maxCount: 1 },
-  { name: "pan", maxCount: 1 },
-  { name: "pan_back", maxCount: 1 },
-  { name: "self_pic", maxCount: 1 },
-  { name: "sign", maxCount: 1 },
-]);
+
 
 router.post("/kyc",userController.kyc);
 router.post("/get_kyc_status",userController.get_kyc_status);
@@ -61,6 +41,7 @@ router.post("/add_product", userController.add_product);
 router.post("/get_product", userController.get_product);
 
 router.post("/buy_request", userController.buy_request);
+router.post("/bulk_product_data", uploadFile.single("file"),userController.bulk_product_data);
 
 
 

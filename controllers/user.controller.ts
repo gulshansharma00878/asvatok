@@ -212,7 +212,6 @@ class userController {
 
   async add_product(req: Request, res: Response) {
     const userId = (req as any).user.id;
-    const files = (req as any)?.files;
     const {
       sku_code,
       name,
@@ -341,7 +340,6 @@ class userController {
 
   async get_product(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const { oldPassword, password } = req.body;
     try {
       await codeController.get_product(
         { userId },
@@ -359,6 +357,20 @@ class userController {
     try {
       await codeController.buy_request(
         { userId , product_id, quantity, price},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async bulk_product_data(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const filePath = (req as any).file.path;
+    try {
+      await codeController.bulk_product_data(
+        { filePath},
         res
       );
     } catch (e) {

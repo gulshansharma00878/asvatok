@@ -5,7 +5,11 @@ import { Sequelize, QueryTypes, Op, json } from "sequelize";
 import { Encrypt } from "../common/encryptpassword";
 const MyQuery = db.sequelize;
 const jwt = require("jsonwebtoken");
-
+const csvParser = require('csv-parser');
+const fs = require('fs');
+const path = require('path');
+import { promisify } from 'util';
+const unlinkAsync = promisify(fs.unlink);
 class codeController {
   async addUser(payload: any, res: Response) {
     const { email, password, name, mobile } = payload;
@@ -429,6 +433,54 @@ class codeController {
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
 
+    }
+  }
+
+  async  bulk_product_data(payload: any, res: Response) {
+    const { filePath } = payload;
+    
+    try {
+      interface CsvData {
+        [key: string]: string;
+      }
+  
+      const results: CsvData[] = [];
+  
+      await new Promise<void>((resolve, reject) => {
+        fs.createReadStream(filePath)
+          .pipe(csvParser())
+          .on('data', (data: CsvData) => results.push(data))
+          .on('end', resolve)
+          .on('error', reject);
+      });
+  
+      if (results.length === 0) {
+        throw new Error('CSV file is empty or incorrectly formatted');
+      }
+      const keys = Object.keys(results[0]).map(key => key.trim());
+      const escapedKeys = keys.map(key => `\`${key}\``).join(', ');
+  
+      const values = results.map(row => `(${Object.values(row).map(value => MyQuery.escape(value)).join(', ')})`);
+      const valuesString = values.join(', ');
+  
+      const query = `INSERT INTO ashva (${escapedKeys}) VALUES ${valuesString}`;
+  
+      console.log("Generated SQL Query: ", query);
+  
+      await MyQuery.query(query, { type: QueryTypes.INSERT });
+  
+      await unlinkAsync(filePath);
+  
+      commonController.successMessage({ data: results.length }, "CSV data successfully stored in the database.", res);
+    } catch (error) {
+      try {
+        if (fs.existsSync(filePath)) {
+          await unlinkAsync(filePath);
+        }
+      } catch (unlinkError) {
+        console.error('Error cleaning up file:', unlinkError);
+      }
+      commonController.errorMessage(`${error}`, res);
     }
   }
 
