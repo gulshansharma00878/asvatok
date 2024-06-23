@@ -232,7 +232,7 @@ class codeController {
         })
         if (checkKyc) {
           const { accepted } = checkKyc
-          commonController.successMessage(accepted, `Kyc status `, res);
+          commonController.successMessage({accepted}, `Kyc status `, res);
         } else {
           commonController.errorMessage(`User not found`, res);
         }
@@ -245,16 +245,16 @@ class codeController {
 
   async add_profile(payload: any, res: Response) {
     try {
-      const { userId, aboutMe, wallet, image } = payload
+      const { userId, aboutMe, wallet, pic } = payload
 
       const checkData = await db.users.findOne({
         where: {
-          userId
+          id:userId
         }
       })
       if (checkData) {
         const add_pro = await db.profiles.create({
-          userId, aboutMe, wallet, image
+          userId, aboutMe, wallet, pic
         })
         commonController.successMessage(add_pro, "Profile added", res)
       } else {
@@ -360,9 +360,8 @@ class codeController {
         sold,
         type_series,
         instock,
-        keyword, images} = payload
+        keyword, images, cover_pic} = payload
 
-        const _images = JSON.stringify(images)
       const add_pro = await db.products.create({
         userId, sku_code,
         name,
@@ -389,7 +388,7 @@ class codeController {
         type_series,
         instock,
         keyword,
-        hidden: 1,images: _images, approved: 0
+        hidden: 1,images , approved: 0, cover_pic
       })
       commonController.successMessage(add_pro, "Profile added", res)
 

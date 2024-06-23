@@ -41,7 +41,6 @@ class userController {
 
   async kyc(req: Request, res: Response) {
     const userId = (req as any).user.id;
-    const files = (req as any)?.files;
     const { name, address, number, id_num, type } = req.body
     try {
       const _a_front = req.body.a_front;
@@ -122,7 +121,7 @@ class userController {
   async get_kyc_status(req: Request, res: Response) {
     try {
       const userId = (req as any).user.id;
-      await codeController.get_kyc_status(userId, res)
+      await codeController.get_kyc_status({ userId }, res)
 
     } catch (e) {
       console.warn(e);
@@ -143,23 +142,26 @@ class userController {
   async add_profile(req: Request, res: Response) {
     const userId = (req as any).user.id;
     const { aboutMe, wallet } = req.body;
-    const files = (req as any)?.files;
 
     try {
-      const _image = req.body.image;
-      let image = `profile/profile_${userId}.png`;
-      const image64Data = _image.replace(
-        /^data:([A-Za-z-+/]+);base64,/,
-        ""
-      );
-      fs.writeFileSync(image, image64Data, {
-        encoding: "base64",
-      });
-      image = "https://asvatok.onrender.com/" + image;
-      
-     
+      const _image = req.body.pic;
+      let pic = ""
+      if (_image) {
 
-      await codeController.add_profile({ userId, aboutMe, wallet, image }, res);
+        let image = `profile/profile_${userId}.png`;
+        const image64Data = _image.replace(
+          /^data:([A-Za-z-+/]+);base64,/,
+          ""
+        );
+        fs.writeFileSync(image, image64Data, {
+          encoding: "base64",
+        });
+        pic = "https://asvatok.onrender.com/" + image;
+      }
+
+
+
+      await codeController.add_profile({ userId, aboutMe, wallet, pic }, res);
     } catch (e) {
       console.warn(e);
       commonController.errorMessage(`${e}`, res);
@@ -168,17 +170,25 @@ class userController {
 
   async edit_profile(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const { id, aboutMe, wallet, name } = req.body;
-    const { files } = (req as any)?.files;
+    const { id, aboutMe, wallet, name, } = req.body;
     try {
       const get_data = await db.profiles.findOne({
         where: {
           id
         }
       })
-      let pic = files.pic[0].path;
-      if (pic) {
-        pic = "https://asvatok.onrender.com/" + pic;
+      const _image = req.body.pic;
+      let pic = ""
+      if (_image) {
+        let image = `profile/profile_${userId}.png`;
+        const image64Data = _image.replace(
+          /^data:([A-Za-z-+/]+);base64,/,
+          ""
+        );
+        fs.writeFileSync(image, image64Data, {
+          encoding: "base64",
+        });
+        pic = "https://asvatok.onrender.com/" + image;
       } else {
         pic = get_data.pic
       }
@@ -246,17 +256,20 @@ class userController {
       type_series,
       instock,
       keyword,
-      hidden
+      hidden,
+      cover_pic,
+      img // Accept the images array from the request body
     } = req.body;
+
     try {
-      const images = ['image1', 'image2', 'image3', 'image4', 'image5'];
-      const imageUrls:any[] = [];
+      const imageUrls: string[] = [];
       const random_number = commonController.generateOtp();
-  
-      for (const img of images) {
-        const _image = req.body[img];
+
+      // Process the images array
+      for (let i = 0; i < 5; i++) {
+        const _image = img[i];
         if (_image) {
-          let imageFilename = `productimage/${img}_${userId}_${random_number}.png`;
+          const imageFilename = `productimage/image${i + 1}_${userId}_${random_number}.png`;
           const image64Data = _image.replace(/^data:([A-Za-z-+/]+);base64,/, "");
           fs.writeFileSync(imageFilename, image64Data, { encoding: "base64" });
           imageUrls.push(`https://asvatok.onrender.com/${imageFilename}`);
@@ -264,15 +277,24 @@ class userController {
           imageUrls.push(""); // Push an empty string if the image is not present
         }
       }
-  
+    
+
       let videoUrl = "";
       if (video) {
         const videoFilename = `productvideo/video_${userId}_${random_number}.mp4`;
         const videoBase64Data = video.replace(/^data:([A-Za-z-+/]+);base64,/, "");
         fs.writeFileSync(videoFilename, videoBase64Data, { encoding: "base64" });
-        videoUrl = "https://asvatok.onrender.com/" + videoFilename;
+        videoUrl = `https://asvatok.onrender.com/${videoFilename}`;
       }
-  
+
+      let cover_pic_ = "";
+      if (cover_pic) {
+        const coverFilename = `productimage/cover_pic_${userId}_${random_number}.png`;
+        const coverBase64Data = cover_pic.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+        fs.writeFileSync(coverFilename, coverBase64Data, { encoding: "base64" });
+        cover_pic_ = `https://asvatok.onrender.com/${coverFilename}`;
+      }
+
       await codeController.add_product({
         userId,
         sku_code,
@@ -301,14 +323,16 @@ class userController {
         instock,
         keyword,
         hidden,
-        images: [imageUrls[0],imageUrls[1], imageUrls[2],imageUrls[3],imageUrls[4]],
+        images: imageUrls, // Use the processed image URLs
+        cover_pic: cover_pic_
       }, res);
     } catch (e) {
       console.warn(e);
       commonController.errorMessage(`${e}`, res);
     }
   }
-  
+
+
 
   async get_product(req: Request, res: Response) {
     const userId = (req as any).user?.id;
@@ -325,10 +349,10 @@ class userController {
 
   async buy_request(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const { product_id, quantity, price} = req.body;
+    const { product_id, quantity, price } = req.body;
     try {
       await codeController.buy_request(
-        { userId , product_id, quantity, price},
+        { userId, product_id, quantity, price },
         res
       );
     } catch (e) {
@@ -342,7 +366,7 @@ class userController {
     const filePath = (req as any).file.path;
     try {
       await codeController.bulk_product_data(
-        { filePath},
+        { filePath },
         res
       );
     } catch (e) {

@@ -1,8 +1,7 @@
 "use strict";
-import { DateDataType, Model, Sequelize } from "sequelize";
+import { Model, Sequelize } from "sequelize";
 
 interface UsersAttributes {
-
   userId: number;
   sku_code: string;
   name: string;
@@ -20,11 +19,7 @@ interface UsersAttributes {
   metal: string;
   remarks: string;
   quantity: string;
-  image1: string;
-  image2: string;
-  image3: string;
-  image4: string;
-  image5: string;
+  images: string[];
   custom_url: string;
   video: string;
   current_price: string;
@@ -34,8 +29,9 @@ interface UsersAttributes {
   type_series: string;
   instock: string;
   keyword: string;
+  cover_pic: string;
   hidden: boolean;
-  approved: boolean
+  approved: boolean;
 }
 
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
@@ -57,11 +53,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     metal!: string;
     remarks!: string;
     quantity!: string;
-    image1!: string;
-    image2!: string;
-    image3!: string;
-    image4!: string;
-    image5!: string;
+    images!: string[];
     custom_url!: string;
     video!: string;
     current_price!: string;
@@ -71,54 +63,47 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     type_series!: string;
     instock!: string;
     keyword!: string;
+    cover_pic!: string;
     hidden!: boolean;
-    approved!: boolean
-
+    approved!: boolean;
 
     static associate(models: any) {
       // Define associations here
-      // Users.belongsTo(models.packages, { foreignKey: 'packageId' });
-      // Users.belongsTo(models.company_registrations, { foreignKey: 'companyId' });
-      // Users.belongsTo(models.roles, { foreignKey: 'roleId' });
     }
   }
 
   Users.init(
     {
       userId: { type: DataTypes.INTEGER },
-      sku_code: { type: DataTypes.STRING },
-      name: { type: DataTypes.STRING },
+      sku_code: { type: DataTypes.TEXT },
+      name: { type: DataTypes.TEXT },
       description: { type: DataTypes.TEXT },
-      issue_year: { type: DataTypes.STRING },
-      item_condition: { type: DataTypes.STRING },
-      catagory: { type: DataTypes.STRING },
+      issue_year: { type: DataTypes.TEXT },
+      item_condition: { type: DataTypes.TEXT },
+      catagory: { type: DataTypes.TEXT },
       varities: { type: DataTypes.TEXT },
-      city: { type: DataTypes.STRING },
-      ruler: { type: DataTypes.STRING },
-      denomination: { type: DataTypes.STRING },
-      signatory: { type: DataTypes.STRING },
-      rarity: { type: DataTypes.STRING },
-      specification: { type: DataTypes.STRING },
-      metal: { type: DataTypes.STRING },
-      remarks: { type: DataTypes.STRING },
-      quantity: { type: DataTypes.STRING },
-      image1: { type: DataTypes.STRING },
-      image2: { type: DataTypes.STRING },
-      image3: { type: DataTypes.STRING },
-      image4: { type: DataTypes.STRING },
-      image5: { type: DataTypes.STRING },
-      custom_url: { type: DataTypes.STRING },
-      video: { type: DataTypes.STRING },
-      current_price: { type: DataTypes.STRING },
-      initial_price: { type: DataTypes.STRING },
-      note: { type: DataTypes.STRING },
-      sold: { type: DataTypes.STRING },
-      type_series: { type: DataTypes.STRING },
-      instock: { type: DataTypes.STRING },
+      city: { type: DataTypes.TEXT },
+      ruler: { type: DataTypes.TEXT },
+      denomination: { type: DataTypes.TEXT },
+      signatory: { type: DataTypes.TEXT },
+      rarity: { type: DataTypes.TEXT },
+      specification: { type: DataTypes.TEXT },
+      metal: { type: DataTypes.TEXT },
+      remarks: { type: DataTypes.TEXT },
+      quantity: { type: DataTypes.TEXT },
+      images: { type: DataTypes.JSON }, // Changed to JSON
+      custom_url: { type: DataTypes.TEXT },
+      video: { type: DataTypes.TEXT },
+      current_price: { type: DataTypes.TEXT },
+      initial_price: { type: DataTypes.TEXT },
+      note: { type: DataTypes.TEXT },
+      sold: { type: DataTypes.TEXT },
+      type_series: { type: DataTypes.TEXT },
+      instock: { type: DataTypes.TEXT },
       keyword: { type: DataTypes.TEXT },
+      cover_pic: { type: DataTypes.TEXT },
       hidden: { type: DataTypes.BOOLEAN },
       approved: { type: DataTypes.BOOLEAN },
-
     },
     {
       sequelize,
