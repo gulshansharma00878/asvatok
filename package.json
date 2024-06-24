@@ -4,7 +4,9 @@
   "description": "A trading platform",
   "main": "index.js",
   "scripts": {
-    "dev": "tsnd --respawn index.ts"
+    "build": "tsc",
+    "dev": "tsnd --respawn index.ts",
+    "start": "node dist/index.js"
   },
   "author": "Gulshan Sharma",
   "license": "ISC",

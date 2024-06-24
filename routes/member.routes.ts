@@ -38,11 +38,12 @@ router.post("/get_profile",userController.get_profile);
 router.post("/changepassword", userController.change_password);
 
 router.post("/add_product", userController.add_product);
-router.post("/get_product", userController.get_product);
+router.post("/get_product", userController. get_product);
 
 router.post("/buy_request", userController.buy_request);
 router.post("/bulk_product_data", uploadFile.single("file"),userController.bulk_product_data);
-
+router.post("/get_wallet_balance",userController.get_wallet_balance)
+router.post("/get_product_by_id",userController.get_product_by_id)
 
 
 

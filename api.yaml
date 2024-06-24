@@ -489,7 +489,7 @@ paths:
                   minLength: 1
                   description: price.
               required: 
-                - id
+                - product_id
                 - quantity
                 - price
       security:
@@ -536,3 +536,37 @@ paths:
           description: Bad Request
         '500':
           description: Internal Server Error OR authorization header must be provided
+
+  /api/v1/member/get_wallet_balance:
+      post:
+        summary: Return wallet balance.
+        tags:
+          - wallets
+        security:
+          - BearerAuth: []
+        responses: 
+          '200':
+            description: OK
+
+  /api/v1/member/get_product_by_id:
+    post:
+      summary: Get product by id.
+      tags:
+        - Products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: 
+                  type: string
+                  minLength: 1
+                  description: product id.
+              required: 
+                - id
+      security:
+        - BearerAuth: []
+      responses: 
+        '200':
+          description: OK

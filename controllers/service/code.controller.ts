@@ -1,7 +1,7 @@
-import { Response, Request } from "express";
+import { Response, Request, response } from "express";
 import db from "../../models";
 import commonController from "../common/common.controller";
-import { Sequelize, QueryTypes, Op, json } from "sequelize";
+import { Sequelize, QueryTypes, Op, json, where } from "sequelize";
 import { Encrypt } from "../common/encryptpassword";
 const MyQuery = db.sequelize;
 const jwt = require("jsonwebtoken");
@@ -43,6 +43,14 @@ class codeController {
           active: false,
         });
 
+        const address = commonController.generateOtp()
+        await db.wallets.create({
+          userId:insert.id,
+          address,
+          amount:0,
+          wallet:0,
+          active:1
+        })
         const token = jwt.sign(
           {
             email,
@@ -232,7 +240,7 @@ class codeController {
         })
         if (checkKyc) {
           const { accepted } = checkKyc
-          commonController.successMessage({accepted}, `Kyc status `, res);
+          commonController.successMessage({ accepted }, `Kyc status `, res);
         } else {
           commonController.errorMessage(`User not found`, res);
         }
@@ -249,7 +257,7 @@ class codeController {
 
       const checkData = await db.users.findOne({
         where: {
-          id:userId
+          id: userId
         }
       })
       if (checkData) {
@@ -360,10 +368,17 @@ class codeController {
         sold,
         type_series,
         instock,
-        keyword, images, cover_pic} = payload
+        keyword, images, cover_pic } = payload
+      const get_catname = await db.catagorioes.findOne({
+        where: {
+          id: catagory
+        }
+      })
+      const auto_sku = `${get_catname.name}/${name}/${userId}`
+
 
       const add_pro = await db.products.create({
-        userId, sku_code,
+        userId, sku_code: auto_sku,
         name,
         description,
         issue_year,
@@ -388,7 +403,7 @@ class codeController {
         type_series,
         instock,
         keyword,
-        hidden: 1,images , approved: 0, cover_pic
+        hidden: 1, images, approved: 0, cover_pic
       })
       commonController.successMessage(add_pro, "Profile added", res)
 
@@ -403,6 +418,17 @@ class codeController {
     const { userId } = payload
     try {
       const get_data = await MyQuery.query(`select * from products where hidden = 0`, { type: QueryTypes.SELECT })
+      commonController.successMessage(get_data, "products Data", res)
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
+    }
+  }
+
+  async get_product_by_id(payload: any, res: Response) {
+    const { userId,id } = payload
+    try {
+      const get_data = await MyQuery.query(`select * from products where id=${id} `, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -436,16 +462,16 @@ class codeController {
     }
   }
 
-  async  bulk_product_data(payload: any, res: Response) {
+  async bulk_product_data(payload: any, res: Response) {
     const { filePath } = payload;
-    
+
     try {
       interface CsvData {
         [key: string]: string;
       }
-  
+
       const results: CsvData[] = [];
-  
+
       await new Promise<void>((resolve, reject) => {
         fs.createReadStream(filePath)
           .pipe(csvParser())
@@ -453,24 +479,24 @@ class codeController {
           .on('end', resolve)
           .on('error', reject);
       });
-  
+
       if (results.length === 0) {
         throw new Error('CSV file is empty or incorrectly formatted');
       }
       const keys = Object.keys(results[0]).map(key => key.trim());
       const escapedKeys = keys.map(key => `\`${key}\``).join(', ');
-  
+
       const values = results.map(row => `(${Object.values(row).map(value => MyQuery.escape(value)).join(', ')})`);
       const valuesString = values.join(', ');
-  
+
       const query = `INSERT INTO ashva (${escapedKeys}) VALUES ${valuesString}`;
-  
+
       console.log("Generated SQL Query: ", query);
-  
+
       await MyQuery.query(query, { type: QueryTypes.INSERT });
-  
+
       await unlinkAsync(filePath);
-  
+
       commonController.successMessage({ data: results.length }, "CSV data successfully stored in the database.", res);
     } catch (error) {
       try {
@@ -483,7 +509,27 @@ class codeController {
       commonController.errorMessage(`${error}`, res);
     }
   }
+  async get_wallet_balance(payload: any, res: Response) {
+    try {
+      const { userId } = payload
+      const balance = await db.wallets.findOne({
+        where: {
+          userId
+        }
+      })
+      if (balance) {
+        commonController.successMessage(balance, "users wallet data", res)
+      }
+      else {
+        commonController.errorMessage("user wallet not found", res)
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+
+  }
 
 }
 
-export default new codeController();
+  export default new codeController();

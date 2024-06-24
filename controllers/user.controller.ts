@@ -346,6 +346,19 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+  async get_product_by_id(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+    try {
+      await codeController.get_product_by_id(
+        { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
 
   async buy_request(req: Request, res: Response) {
     const userId = (req as any).user?.id;
@@ -374,6 +387,19 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+  async get_wallet_balance(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    try {
+      await codeController.get_wallet_balance(
+        { userId },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+  
 
 }
 

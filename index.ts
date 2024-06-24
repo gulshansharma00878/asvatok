@@ -6,7 +6,7 @@ import db from "./models";
 import cors from "cors"; // Importing cors directly
 const jwt = require('jsonwebtoken')
 const bodyParser = require("body-parser");
-const { swaggerServe, swaggerSetup } = require("./config/config.js");
+const { swaggerServe, swaggerSetup } = require("./config/config");
 
 const app = express();
 
@@ -80,6 +80,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 // Database synchronization and server startup
 db.sequelize.sync().then(() => {
   app.listen(port, async () => {
-    console.log("App Started");
+    console.log(`App Started on port ${port}`);
   });
 });
