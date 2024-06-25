@@ -411,6 +411,29 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+
+  async add_category(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {catName, details, image} = req.body
+    const random_number = commonController.generateOtp();
+
+    let cover_pic_ = "";
+    if (image) {
+      const coverFilename = `productimage/categoryImage_${userId}_${random_number}.png`;
+      const coverBase64Data = image.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+      fs.writeFileSync(coverFilename, coverBase64Data, { encoding: "base64" });
+      cover_pic_ = `https://asvatok.onrender.com/${coverFilename}`;
+    }
+    try {
+      await codeController.add_category(
+        { userId,catName, details, image:cover_pic_ },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
   
 
 }

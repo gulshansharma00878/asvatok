@@ -45,11 +45,11 @@ class codeController {
 
         const address = commonController.generateOtp()
         await db.wallets.create({
-          userId:insert.id,
+          userId: insert.id,
           address,
-          amount:0,
-          wallet:0,
-          active:1
+          amount: 0,
+          wallet: 0,
+          active: 1
         })
         const token = jwt.sign(
           {
@@ -370,19 +370,19 @@ class codeController {
         instock,
         keyword, images, cover_pic } = payload
 
-       let proId= 0
+      let proId = 0
 
-        const getPro = MyQuery.query(`select id from products order by id desc limit 1`,{type: QueryTypes.SELECT})
-        if(getPro.length>0){
-          proId=getPro[0].id
-        }
-        
+      const getPro = MyQuery.query(`select id from products order by id desc limit 1`, { type: QueryTypes.SELECT })
+      if (getPro.length > 0) {
+        proId = getPro[0].id
+      }
+
       const get_catname = await db.categories.findOne({
         where: {
           id: catagory
         }
       })
-      const auto_sku = `${get_catname.catName}/${name}/${Number(proId) +1}`
+      const auto_sku = `${get_catname.catName}/${name}/${Number(proId) + 1}`
 
 
       const add_pro = await db.products.create({
@@ -466,7 +466,7 @@ class codeController {
   }
 
   async get_product_by_id(payload: any, res: Response) {
-    const { userId,id } = payload
+    const { userId, id } = payload
     try {
       const get_data = await MyQuery.query(`select id,
       userId,
@@ -602,9 +602,13 @@ class codeController {
 
   }
 
-  async get_categories(payload:any, res: Response){
+  async get_categories(payload: any, res: Response) {
     try {
-      const get_cats = await db.categories.findAll()
+      const get_cats = await db.categories.findAll({
+        where: {
+          active: true
+        }
+      })
       commonController.successMessage(get_cats, "All categories", res)
 
     } catch (e) {
@@ -613,6 +617,28 @@ class codeController {
     }
   }
 
+  async add_category(payload: any, res: Response) {
+    const { userId, catName, details, image } = payload
+    try {
+      const get_cats = await db.categories.findOne({
+        where: {
+          catName
+        }
+      })
+      if (get_cats) {
+        commonController.errorMessage("Duplicate category", res)
+      } else {
+        const add_cats = await db.categories.create({
+          userId, catName, details, image, active: false
+        })
+        commonController.successMessage(add_cats, "All categories", res)
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
 }
 
-  export default new codeController();
+export default new codeController();

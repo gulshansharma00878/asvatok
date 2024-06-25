@@ -44,7 +44,9 @@ router.post("/buy_request", userController.buy_request);
 router.post("/bulk_product_data", uploadFile.single("file"),userController.bulk_product_data);
 router.post("/get_wallet_balance",userController.get_wallet_balance)
 router.post("/get_product_by_id",userController.get_product_by_id)
+
 router.post("/get_all_categories",userController.get_categories)
+router.post("/add_category",userController.add_category)
 
 
 
