@@ -349,7 +349,7 @@ class codeController {
         description,
         issue_year,
         item_condition,
-        catagory,
+        category,
         varities,
         city,
         ruler,
@@ -377,11 +377,14 @@ class codeController {
         proId = getPro[0].id
       }
 
+      console.log(category, "category");
+
       const get_catname = await db.categories.findOne({
         where: {
-          id: catagory
+          id: category
         }
       })
+      console.log(get_catname);
       const auto_sku = `${get_catname.catName}/${name}/${Number(proId) + 1}`
 
 
@@ -391,7 +394,7 @@ class codeController {
         description,
         issue_year,
         item_condition,
-        catagory,
+        category,
         varities,
         city,
         ruler,
@@ -413,7 +416,7 @@ class codeController {
         keyword,
         hidden: 1, images, approved: 0, cover_pic
       })
-      commonController.successMessage(add_pro, "Profile added", res)
+      commonController.successMessage(add_pro, "product added", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -432,7 +435,7 @@ class codeController {
       description,
       issue_year,
       item_condition,
-      (select a.catName from categories a where id = category ) as category,
+      (select a.catName from categories a where a.id = category ) as category,
       varities,
       city,
       ruler,

@@ -353,7 +353,7 @@ paths:
                 item_condition: 
                   type: string
                   description: Condition of the item
-                catagory: 
+                category: 
                   type: string
                   description: Product category
                 varities: 
@@ -424,7 +424,7 @@ paths:
       #           - description
       #           - issue_year
       #           - item_condition
-      #           - catagory
+      #           - category
       #           - varities
       #           - city
       #           - ruler
