@@ -5,16 +5,18 @@ interface UsersAttributes {
   userId: number;
   catName: string;
   details: string;
+  image: string;
   active: boolean;
 }
 
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
   class Users extends Model<UsersAttributes> implements UsersAttributes {
-    
+
     userId!: number;
-catName!: string;
-details!: string;
-  active!: boolean;
+    catName!: string;
+    details!: string;
+    image!: string;
+    active!: boolean;
 
     static associate(models: any) {
       // Define associations here
@@ -29,6 +31,7 @@ details!: string;
       userId: { type: DataTypes.INTEGER },
       catName: { type: DataTypes.STRING },
       details: { type: DataTypes.STRING },
+      image: { type: DataTypes.STRING },
       active: { type: DataTypes.BOOLEAN },
     },
     {
