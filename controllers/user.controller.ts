@@ -399,6 +399,18 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+  async get_categories(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    try {
+      await codeController.get_categories(
+        { userId },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
   
 
 }

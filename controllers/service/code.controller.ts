@@ -369,12 +369,20 @@ class codeController {
         type_series,
         instock,
         keyword, images, cover_pic } = payload
-      const get_catname = await db.catagorioes.findOne({
+
+       let proId= 0
+
+        const getPro = MyQuery.query(`select id from products order by id desc limit 1`,{type: QueryTypes.SELECT})
+        if(getPro.length>0){
+          proId=getPro[0].id
+        }
+        
+      const get_catname = await db.categories.findOne({
         where: {
           id: catagory
         }
       })
-      const auto_sku = `${get_catname.name}/${name}/${userId}`
+      const auto_sku = `${get_catname.catName}/${name}/${Number(proId) +1}`
 
 
       const add_pro = await db.products.create({
@@ -417,7 +425,39 @@ class codeController {
   async get_product(payload: any, res: Response) {
     const { userId } = payload
     try {
-      const get_data = await MyQuery.query(`select * from products where hidden = 0`, { type: QueryTypes.SELECT })
+      const get_data = await MyQuery.query(`select id,
+      userId,
+      sku_code,
+      name,
+      description,
+      issue_year,
+      item_condition,
+      (select a.catName from categories a where id = category ) as category,
+      varities,
+      city,
+      ruler,
+      denomination,
+      signatory,
+      rarity,
+      specification,
+      metal,
+      remarks,
+      quantity,
+      images,
+      custom_url,
+      video,
+      current_price,
+      initial_price,
+      note,
+      sold,
+      type_series,
+      instock,
+      keyword,
+      cover_pic,
+      hidden,
+      approved,
+      createdAt,
+      updatedAt from products where hidden = 0`, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -428,7 +468,39 @@ class codeController {
   async get_product_by_id(payload: any, res: Response) {
     const { userId,id } = payload
     try {
-      const get_data = await MyQuery.query(`select * from products where id=${id} `, { type: QueryTypes.SELECT })
+      const get_data = await MyQuery.query(`select id,
+      userId,
+      sku_code,
+      name,
+      description,
+      issue_year,
+      item_condition,
+      (select a.catName from categories a where id = category ) as category,
+      varities,
+      city,
+      ruler,
+      denomination,
+      signatory,
+      rarity,
+      specification,
+      metal,
+      remarks,
+      quantity,
+      images,
+      custom_url,
+      video,
+      current_price,
+      initial_price,
+      note,
+      sold,
+      type_series,
+      instock,
+      keyword,
+      cover_pic,
+      hidden,
+      approved,
+      createdAt,
+      updatedAt from products where id=${id} `, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -528,6 +600,17 @@ class codeController {
       console.warn(e, "error");
     }
 
+  }
+
+  async get_categories(payload:any, res: Response){
+    try {
+      const get_cats = await db.categories.findAll()
+      commonController.successMessage(get_cats, "All categories", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
   }
 
 }

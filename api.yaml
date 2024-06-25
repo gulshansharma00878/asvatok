@@ -570,3 +570,14 @@ paths:
       responses: 
         '200':
           description: OK
+      
+  /api/v1/member/get_all_categories:
+      post:
+        summary: Return all categories.
+        tags:
+          - Products
+        security:
+          - BearerAuth: []
+        responses: 
+          '200':
+            description: OK
