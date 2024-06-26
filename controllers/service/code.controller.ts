@@ -372,22 +372,18 @@ class codeController {
 
       let proId = 0
 
-      const getPro = MyQuery.query(`select id from products order by id desc limit 1`, { type: QueryTypes.SELECT })
+      const getPro = await MyQuery.query(`select id from products order by id desc limit 1`, { type: QueryTypes.SELECT })
       if (getPro.length > 0) {
         proId = getPro[0].id
       }
-
-      console.log(category, "category");
 
       const get_catname = await db.categories.findOne({
         where: {
           id: category
         }
       })
-      console.log(get_catname);
-      const auto_sku = `${get_catname.catName}/${name}/${Number(proId) + 1}`
-
-
+      const catName = (get_catname.catName).replace(" ", "")
+      const auto_sku = `${catName}/${name}/${Number(proId) + 1}`
       const add_pro = await db.products.create({
         userId, sku_code: auto_sku,
         name,

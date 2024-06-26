@@ -8,7 +8,7 @@ interface UsersAttributes {
   description: string;
   issue_year: string;
   item_condition: string;
-  category: string;
+  category: number;
   varities: string;
   city: string;
   ruler: string;
@@ -42,7 +42,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     description!: string;
     issue_year!: string;
     item_condition!: string;
-    category!: string;
+    category!: number;
     varities!: string;
     city!: string;
     ruler!: string;
@@ -80,7 +80,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       description: { type: DataTypes.TEXT },
       issue_year: { type: DataTypes.TEXT },
       item_condition: { type: DataTypes.TEXT },
-      category: { type: DataTypes.TEXT },
+      category: { type: DataTypes.INTEGER },
       varities: { type: DataTypes.TEXT },
       city: { type: DataTypes.TEXT },
       ruler: { type: DataTypes.TEXT },
