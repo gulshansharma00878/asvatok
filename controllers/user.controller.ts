@@ -332,8 +332,6 @@ class userController {
     }
   }
 
-
-
   async get_product(req: Request, res: Response) {
     const userId = (req as any).user?.id;
     try {
@@ -346,6 +344,7 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+
   async get_product_by_id(req: Request, res: Response) {
     const userId = (req as any).user?.id;
     const {id}= req.body
@@ -360,12 +359,26 @@ class userController {
     }
   }
 
+  async get_product_by_user(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+    try {
+      await codeController.get_product_by_user(
+        { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
   async buy_request(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const { product_id, quantity, price } = req.body;
+    const { product_id, amount } = req.body;
     try {
       await codeController.buy_request(
-        { userId, product_id, quantity, price },
+        { userId, product_id, amount },
         res
       );
     } catch (e) {
@@ -399,11 +412,55 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+
+  async get_wallet_balance_by_user(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id} = req.body
+    try {
+      await codeController.get_wallet_balance_by_user(
+        { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
   async get_categories(req: Request, res: Response) {
     const userId = (req as any).user?.id;
     try {
       await codeController.get_categories(
         { userId },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async get_all_categories_public(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    try {
+      await codeController.get_all_categories_public(
+        { userId },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+  
+
+  async get_category_by_id(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id} = req.body
+
+    try {
+      await codeController.get_category_by_id(
+        { userId,id },
         res
       );
     } catch (e) {
@@ -434,8 +491,36 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+
+  async purchase_history(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+
+    try {
+      await codeController.purchase_history(
+        { userId },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
   
 
+  async all_products_public(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    // const { id } = req.body;
+    try {
+      await codeController.all_products_public(
+        { userId },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+ 
 }
 
 export default new userController();

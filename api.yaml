@@ -480,17 +480,12 @@ paths:
                   type: string
                   minLength: 1
                   description: product id.
-                quantity: 
-                  type: string
-                  minLength: 1
-                  description: quantity.
                 price: 
                   type: string
                   minLength: 1
                   description: price.
               required: 
                 - product_id
-                - quantity
                 - price
       security:
         - BearerAuth: []
@@ -618,3 +613,275 @@ paths:
          description: Bad Request
         '500':
          description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/approve_buy_request:
+    post:
+      summary: approve buy request
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                 id:
+                   type: string
+                   minLength: 1
+                   description: id of buy request.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/reject_buy_request:
+    post:
+      summary: reject buy request
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                 id:
+                   type: string
+                   minLength: 1
+                   description: id of buy request.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/all_buy_requests:
+    post:
+      summary: all buy request for admin
+      tags:
+        - Admin
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/auth/all_products_public:
+    post:
+      summary: All products with public access
+      tags:
+        - Products
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                 id:
+                   type: string
+                   minLength: 1
+                   description: id of buy request.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/get_category_by_id:
+    post:
+      summary: Get category by id
+      tags:
+        - Category
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                 id:
+                   type: string
+                   minLength: 1
+                   description: id of buy request.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/get_wallet_balance_by_user:
+    post:
+      summary: Get user balance by id
+      tags:
+        - wallets
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                 id:
+                   type: string
+                   minLength: 1
+                   description: id of user to get asset.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/add_balance_to_user:
+    post:
+      summary: add balance to user
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id of user.
+                amount:
+                  type: string
+                  minLength: 1
+                  description: amount to user.
+               required:
+                 - id
+                 - amount
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/approve_product:
+    post:
+      summary: add balance to user
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id of product.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/get_product_by_user:
+    post:
+      summary: get product by user id
+      tags:
+        - Products
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id of user.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/purchase_history:
+    post:
+      summary: get purchase history
+      tags:
+        - wallets
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/auth/get_all_categories_public:
+    post:
+      summary: All category with public access
+      tags:
+        - Category
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  
+  
+
+
+

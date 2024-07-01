@@ -5,7 +5,6 @@ interface UsersAttributes {
 
   userId: number;
   product_id: string;
-  quantity: string;
   price: string;
   active: number
 }
@@ -14,7 +13,6 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
   class Users extends Model<UsersAttributes> implements UsersAttributes {
     userId!: number;
   product_id!: string;
-  quantity!: string;
   price!: string;
   active!: number
 
@@ -30,7 +28,6 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     {
       userId:{ type: DataTypes.INTEGER },
       product_id: { type: DataTypes.STRING },
-      quantity: { type: DataTypes.STRING },
       price: { type: DataTypes.STRING },
       active: { type: DataTypes.INTEGER },
     },

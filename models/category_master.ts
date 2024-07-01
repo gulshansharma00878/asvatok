@@ -6,6 +6,7 @@ interface UsersAttributes {
   catName: string;
   details: string;
   image: string;
+  views: number;
   active: boolean;
 }
 
@@ -16,6 +17,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     catName!: string;
     details!: string;
     image!: string;
+    views!: number;
     active!: boolean;
 
     static associate(models: any) {
@@ -32,6 +34,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       catName: { type: DataTypes.STRING },
       details: { type: DataTypes.STRING },
       image: { type: DataTypes.STRING },
+      views: { type: DataTypes.INTEGER },
       active: { type: DataTypes.BOOLEAN },
     },
     {

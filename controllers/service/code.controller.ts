@@ -507,13 +507,70 @@ class codeController {
     }
   }
 
-  async buy_request(payload: any, res: Response) {
-    const { userId, product_id, quantity, price } = payload
+  async get_product_by_user(payload: any, res: Response) {
+    const { userId, id } = payload
     try {
-      const add_request = await db.buys.create({
-        userId, product_id, quantity, price, active: 0
+      const get_data = await MyQuery.query(`select id,
+      userId,
+      sku_code,
+      name,
+      description,
+      issue_year,
+      item_condition,
+      (select a.catName from categories a where id = category ) as category,
+      varities,
+      city,
+      ruler,
+      denomination,
+      signatory,
+      rarity,
+      specification,
+      metal,
+      remarks,
+      quantity,
+      images,
+      custom_url,
+      video,
+      current_price,
+      initial_price,
+      note,
+      sold,
+      type_series,
+      instock,
+      keyword,
+      cover_pic,
+      hidden,
+      approved,
+      createdAt,
+      updatedAt from products where userId=${id} `, { type: QueryTypes.SELECT })
+      commonController.successMessage(get_data, "products Data", res)
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
+    }
+  }
+
+  async buy_request(payload: any, res: Response) {
+    const { userId, product_id, amount } = payload
+    try {
+
+      const check_balance = await db.wallets.findOne({
+        where: {
+          userId
+        }
       })
-      commonController.successMessage(add_request, "products Data", res)
+      if (Number(check_balance.amount) >= Number(amount)) {
+        check_balance.update({
+          amount: Number(check_balance.amount) - Number(amount)
+        })
+        const add_request = await db.buys.create({
+          userId, product_id, amount, active: 0
+        })
+        commonController.successMessage(add_request, "buy requestI Data", res)
+      } else {
+        commonController.errorMessage(`unsufficient balance`, res)
+
+      }
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
 
@@ -598,16 +655,70 @@ class codeController {
       commonController.errorMessage(`${e}`, res);
       console.warn(e, "error");
     }
+  }
 
+  async get_wallet_balance_by_user(payload: any, res: Response) {
+    try {
+      const { id } = payload
+      const balance = await db.wallets.findOne({
+        where: {
+          userId: id
+        }
+      })
+      if (balance) {
+        commonController.successMessage(balance, "users wallet data", res)
+      }
+      else {
+        commonController.errorMessage("user wallet not found", res)
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
   }
 
   async get_categories(payload: any, res: Response) {
     try {
       const get_cats = await db.categories.findAll({
+      })
+      commonController.successMessage(get_cats, "All categories", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async get_all_categories_public(payload: any, res: Response) {
+    try {
+      const get_cats = await db.categories.get_all_categories_public({
         where: {
           active: true
         }
       })
+      commonController.successMessage(get_cats, "All categories", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async get_category_by_id(payload: any, res: Response) {
+    const { id } = payload
+
+    try {
+      const get_cats = await db.categories.findOne({
+        where: {
+          id
+        }
+      })
+
+      if (get_cats) {
+        get_cats.update({
+          views: Number(get_cats.views) + 1
+        })
+      }
       commonController.successMessage(get_cats, "All categories", res)
 
     } catch (e) {
@@ -637,6 +748,37 @@ class codeController {
       console.warn(e, "error");
     }
   }
+
+  async purchase_history(payload: any, res: Response) {
+    try {
+      const { userId } = payload
+      const balance = await db.wallets_histories.findAll({
+        where: {
+          userId
+        }
+      })
+      if (balance) {
+        commonController.successMessage(balance, "users wallet history data", res)
+      }
+      
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async all_products_public(payload: any, res: Response) {
+    try {
+
+      const get_buy = await MyQuery.query(`SELECT name, initial_price,cover_pic,(select a.name from users a where a.id = userId) as creator buys where hidden = 0;`, { type: QueryTypes.SELECT })
+      commonController.successMessage(get_buy, "All products public", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
 
 }
 
