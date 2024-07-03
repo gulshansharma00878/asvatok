@@ -262,7 +262,7 @@ class codeController {
       })
       if (checkData) {
         const add_pro = await db.profiles.create({
-          userId, aboutMe, wallet, pic
+          userId, aboutMe, pic
         })
         commonController.successMessage(add_pro, "Profile added", res)
       } else {
@@ -277,9 +277,10 @@ class codeController {
   async get_profile(payload: any, res: Response) {
     const { userId } = payload
     try {
-      const get_data = await MyQuery.query(`select * ,(select email from users where id = ${userId}) as email, 
-      (select name from users where id = ${userId}) as name
-       from profiles where userId = ${userId}`, { type: QueryTypes.SELECT })
+      const get_data = await MyQuery.query(`select amount ,(select aboutMe from profiles where userId = ${userId}) as aboutMe,
+(select pic from profiles where userId = ${userId}) as pic, (select name from users where id = ${userId}) as name ,
+(select email from users where id = ${userId}) as email from wallets where userId = ${userId}
+`, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "Profile Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -456,7 +457,7 @@ class codeController {
       hidden,
       approved,
       createdAt,
-      updatedAt from products where hidden = 0`, { type: QueryTypes.SELECT })
+      updatedAt from products where userId = ${userId}`, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -542,7 +543,7 @@ class codeController {
       hidden,
       approved,
       createdAt,
-      updatedAt from products where userId=${id} `, { type: QueryTypes.SELECT })
+      updatedAt from products where hidden = 0 and userId = ${userId}`, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -559,6 +560,10 @@ class codeController {
           userId
         }
       })
+
+      console.log(check_balance.amount, "cehc", amount);
+
+
       if (Number(check_balance.amount) >= Number(amount)) {
         check_balance.update({
           amount: Number(check_balance.amount) - Number(amount)
@@ -568,7 +573,7 @@ class codeController {
         })
         commonController.successMessage(add_request, "buy requestI Data", res)
       } else {
-        commonController.errorMessage(`unsufficient balance`, res)
+        commonController.errorMessage(`insufficient balance`, res)
 
       }
     } catch (e) {
@@ -657,25 +662,7 @@ class codeController {
     }
   }
 
-  async get_wallet_balance_by_user(payload: any, res: Response) {
-    try {
-      const { id } = payload
-      const balance = await db.wallets.findOne({
-        where: {
-          userId: id
-        }
-      })
-      if (balance) {
-        commonController.successMessage(balance, "users wallet data", res)
-      }
-      else {
-        commonController.errorMessage("user wallet not found", res)
-      }
-    } catch (e) {
-      commonController.errorMessage(`${e}`, res);
-      console.warn(e, "error");
-    }
-  }
+
 
   async get_categories(payload: any, res: Response) {
     try {
@@ -691,7 +678,7 @@ class codeController {
 
   async get_all_categories_public(payload: any, res: Response) {
     try {
-      const get_cats = await db.categories.get_all_categories_public({
+      const get_cats = await db.categories.findAll({
         where: {
           active: true
         }
@@ -760,7 +747,7 @@ class codeController {
       if (balance) {
         commonController.successMessage(balance, "users wallet history data", res)
       }
-      
+
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
       console.warn(e, "error");
@@ -769,15 +756,27 @@ class codeController {
 
   async all_products_public(payload: any, res: Response) {
     try {
+      const get_buy = await MyQuery.query(`
+        SELECT 
+          name, 
+          initial_price,
+          cover_pic,
+          (SELECT a.name FROM users a WHERE a.id = userId) AS creator 
+        FROM products 
+        WHERE hidden = 0;
+      `, { type: QueryTypes.SELECT });
+      const products = get_buy.map((item: any) => ({ ...item }));
+      console.log(get_buy, "get_buy");
+      console.log(products);
 
-      const get_buy = await MyQuery.query(`SELECT name, initial_price,cover_pic,(select a.name from users a where a.id = userId) as creator buys where hidden = 0;`, { type: QueryTypes.SELECT })
-      commonController.successMessage(get_buy, "All products public", res)
-
+      commonController.successMessage(products, "All products public", res);
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
       console.warn(e, "error");
     }
   }
+
+
 
 
 }

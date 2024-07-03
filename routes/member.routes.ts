@@ -42,9 +42,10 @@ router.post("/add_product", userController.add_product);
 router.post("/get_product", userController. get_product);
 
 router.post("/buy_request", userController.buy_request);
+router.post("/get_buy_requests",userController.get_buy_requests)
+
 router.post("/bulk_product_data", uploadFile.single("file"),userController.bulk_product_data);
 router.post("/get_wallet_balance",userController.get_wallet_balance)
-router.post("/get_wallet_balance_by_user",userController.get_wallet_balance_by_user)
 
 router.post("/get_product_by_id",userController.get_product_by_id)
 router.post("/get_product_by_user",userController.get_product_by_user)
@@ -54,8 +55,6 @@ router.post("/get_all_categories",userController.get_categories)
 router.post("/add_category",userController.add_category)
 router.post("/get_category_by_id",userController.get_category_by_id)
 router.post("/purchase_history",userController.purchase_history)
-
-
 
 
 // admin section

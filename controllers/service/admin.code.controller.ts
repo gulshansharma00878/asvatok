@@ -15,15 +15,15 @@ class codeController {
 
   async all_buy_requests(payload: any, res: Response) {
     try {
-      const get_buy = await MyQuery.query(`SELECT id,userId,
-    product_id,
-    quantity,
-    price,
-    (select a.name from users a where a.id = userId) as name,
-    (select b.amount from wallets b where b.userId = userId) as user_amount,
-    active,
-    createdAt
-    FROM buys;`, { type: QueryTypes.SELECT })
+      const get_buy = await MyQuery.query(`SELECT x.id,x.userId,
+    x.product_id,
+    0 as quantity,
+    x.amount,
+    (select a.name from users a where a.id = x.userId) as name,
+    (select b.amount from wallets b where b.userId = x.userId) as user_amount,
+    x.active,
+    x.createdAt
+    FROM buys x;`, { type: QueryTypes.SELECT })
       commonController.successMessage(get_buy, "All buy request", res)
 
     } catch (e) {
@@ -40,6 +40,12 @@ class codeController {
           id
         }
       })
+
+      const get_product = await db.buys.findOne({
+        where: {
+          id: get_data.product_id
+        }
+      })
       if (get_data.active === 2) {
         commonController.errorMessage("Buy request already rejected", res)
       } else {
@@ -47,7 +53,7 @@ class codeController {
           active: 1
         })
 
-        commonController.successMessage(get_data, "products Data", res)
+        commonController.successMessage(get_product, "products Data", res)
       }
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -86,8 +92,16 @@ class codeController {
     try {
       const { userId, id, amount } = payload
 
+      const get_wallet_balance = await db.wallets.findOne({
+        where: {
+          userId: id
+        }
+      })
+
+      const updated_balance = Number(get_wallet_balance) + Number(amount)
+
       const get_buy = await db.wallets.update({
-        amount
+        amount: updated_balance
       }, {
         where: {
           userId: id
@@ -95,7 +109,6 @@ class codeController {
       })
 
       commonController.successMessage(get_buy, "All products public", res)
-
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
       console.warn(e, "error");
@@ -114,7 +127,13 @@ class codeController {
         }
       })
 
-      commonController.successMessage(get_buy, "approved asset", res)
+      const get_Product = await db.products.findOne({
+        where: {
+          id
+        }
+      })
+
+      commonController.successMessage(get_Product, "approved asset", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);

@@ -456,7 +456,7 @@ paths:
 
   /api/v1/member/get_product:
     post:
-      summary: Return Products.
+      summary: Return all logged in user's Products hidden also.
       tags:
         - Products
       security:
@@ -480,13 +480,13 @@ paths:
                   type: string
                   minLength: 1
                   description: product id.
-                price: 
+                amount: 
                   type: string
                   minLength: 1
                   description: price.
               required: 
                 - product_id
-                - price
+                - amount
       security:
         - BearerAuth: []
       responses: 
@@ -688,20 +688,6 @@ paths:
       summary: All products with public access
       tags:
         - Products
-      requestBody:
-        content:
-          application/json:
-             schema:
-               type: object
-               properties:
-                 id:
-                   type: string
-                   minLength: 1
-                   description: id of buy request.
-               required:
-                 - id
-      security:
-       - BearerAuth: []
       responses:
         '200':
          description: OK
@@ -725,33 +711,6 @@ paths:
                    type: string
                    minLength: 1
                    description: id of buy request.
-               required:
-                 - id
-      security:
-       - BearerAuth: []
-      responses:
-        '200':
-         description: OK
-        '400':
-         description: Bad Request
-        '500':
-         description: Internal Server Error OR authorization header must be provided.
-
-  /api/v1/member/get_wallet_balance_by_user:
-    post:
-      summary: Get user balance by id
-      tags:
-        - wallets
-      requestBody:
-        content:
-          application/json:
-             schema:
-               type: object
-               properties:
-                 id:
-                   type: string
-                   minLength: 1
-                   description: id of user to get asset.
                required:
                  - id
       security:
@@ -825,21 +784,9 @@ paths:
 
   /api/v1/member/get_product_by_user:
     post:
-      summary: get product by user id
+      summary: get product of user that are apporved only!
       tags:
         - Products
-      requestBody:
-        content:
-          application/json:
-             schema:
-               type: object
-               properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: id of user.
-               required:
-                 - id
       security:
        - BearerAuth: []
       responses:

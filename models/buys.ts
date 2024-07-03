@@ -5,7 +5,7 @@ interface UsersAttributes {
 
   userId: number;
   product_id: string;
-  price: string;
+  amount: string;
   active: number
 }
 
@@ -13,7 +13,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
   class Users extends Model<UsersAttributes> implements UsersAttributes {
     userId!: number;
   product_id!: string;
-  price!: string;
+  amount!: string;
   active!: number
 
     static associate(models: any) {
@@ -28,7 +28,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     {
       userId:{ type: DataTypes.INTEGER },
       product_id: { type: DataTypes.STRING },
-      price: { type: DataTypes.STRING },
+      amount: { type: DataTypes.STRING },
       active: { type: DataTypes.INTEGER },
     },
     {

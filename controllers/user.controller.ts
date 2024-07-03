@@ -361,10 +361,10 @@ class userController {
 
   async get_product_by_user(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const {id}= req.body
+    // const {id}= req.body
     try {
       await codeController.get_product_by_user(
-        { userId,id },
+        { userId },
         res
       );
     } catch (e) {
@@ -413,19 +413,7 @@ class userController {
     }
   }
 
-  async get_wallet_balance_by_user(req: Request, res: Response) {
-    const userId = (req as any).user?.id;
-    const {id} = req.body
-    try {
-      await codeController.get_wallet_balance_by_user(
-        { userId,id },
-        res
-      );
-    } catch (e) {
-      console.warn(e);
-      commonController.errorMessage(`${e}`, res);
-    }
-  }
+
 
   async get_categories(req: Request, res: Response) {
     const userId = (req as any).user?.id;
@@ -512,6 +500,20 @@ class userController {
     // const { id } = req.body;
     try {
       await codeController.all_products_public(
+        { userId },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async get_buy_requests(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    // const {id}= req.body
+    try {
+      await codeController.get_buy_requests(
         { userId },
         res
       );
