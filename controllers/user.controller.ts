@@ -334,9 +334,10 @@ class userController {
 
   async get_product(req: Request, res: Response) {
     const userId = (req as any).user?.id;
+    const { page } = req.body;
     try {
       await codeController.get_product(
-        { userId },
+        { userId, page},
         res
       );
     } catch (e) {
@@ -361,10 +362,10 @@ class userController {
 
   async get_product_by_user(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    // const {id}= req.body
+    const { page } = req.body;
     try {
       await codeController.get_product_by_user(
-        { userId },
+        { userId, page},
         res
       );
     } catch (e) {
@@ -497,10 +498,10 @@ class userController {
 
   async all_products_public(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    // const { id } = req.body;
+    const { page } = req.body;
     try {
       await codeController.all_products_public(
-        { userId },
+        { userId, page},
         res
       );
     } catch (e) {

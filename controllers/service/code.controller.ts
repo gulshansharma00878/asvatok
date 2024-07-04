@@ -423,45 +423,93 @@ class codeController {
 
 
   async get_product(payload: any, res: Response) {
-    const { userId } = payload
+    const { userId, page } = payload;
     try {
-      const get_data = await MyQuery.query(`select id,
-      userId,
-      sku_code,
-      name,
-      description,
-      issue_year,
-      item_condition,
-      (select a.catName from categories a where a.id = category ) as category,
-      varities,
-      city,
-      ruler,
-      denomination,
-      signatory,
-      rarity,
-      specification,
-      metal,
-      remarks,
-      quantity,
-      images,
-      custom_url,
-      video,
-      current_price,
-      initial_price,
-      note,
-      sold,
-      type_series,
-      instock,
-      keyword,
-      cover_pic,
-      hidden,
-      approved,
-      createdAt,
-      updatedAt from products where userId = ${userId}`, { type: QueryTypes.SELECT })
-      commonController.successMessage(get_data, "products Data", res)
+      const offset = page * 10
+      let get_data;
+      if (page == "-1") {
+        get_data = await MyQuery.query(`
+          SELECT 
+            id,
+            userId,
+            sku_code,
+            name,
+            description,
+            issue_year,
+            item_condition,
+            (SELECT a.catName FROM categories a WHERE a.id = category) AS category,
+            varities,
+            city,
+            ruler,
+            denomination,
+            signatory,
+            rarity,
+            specification,
+            metal,
+            remarks,
+            quantity,
+            images,
+            custom_url,
+            video,
+            current_price,
+            initial_price,
+            note,
+            sold,
+            type_series,
+            instock,
+            keyword,
+            cover_pic,
+            hidden,
+            approved,
+            createdAt,
+            updatedAt
+          FROM products
+          WHERE userId = ${userId}`, { type: QueryTypes.SELECT });
+      } else {
+        get_data = await MyQuery.query(`
+          SELECT 
+            id,
+            userId,
+            sku_code,
+            name,
+            description,
+            issue_year,
+            item_condition,
+            (SELECT a.catName FROM categories a WHERE a.id = category) AS category,
+            varities,
+            city,
+            ruler,
+            denomination,
+            signatory,
+            rarity,
+            specification,
+            metal,
+            remarks,
+            quantity,
+            images,
+            custom_url,
+            video,
+            current_price,
+            initial_price,
+            note,
+            sold,
+            type_series,
+            instock,
+            keyword,
+            cover_pic,
+            hidden,
+            approved,
+            createdAt,
+            updatedAt
+          FROM products
+          WHERE userId = ${userId}
+          LIMIT 10
+          OFFSET ${offset}
+        `, { type: QueryTypes.SELECT });
+      }
+      commonController.successMessage(get_data, "Products Data", res);
     } catch (e) {
-      commonController.errorMessage(`${e}`, res)
-
+      commonController.errorMessage(`${e}`, res);
     }
   }
 
@@ -509,41 +557,83 @@ class codeController {
   }
 
   async get_product_by_user(payload: any, res: Response) {
-    const { userId, id } = payload
+    const { userId, id, page } = payload
     try {
-      const get_data = await MyQuery.query(`select id,
-      userId,
-      sku_code,
-      name,
-      description,
-      issue_year,
-      item_condition,
-      (select a.catName from categories a where id = category ) as category,
-      varities,
-      city,
-      ruler,
-      denomination,
-      signatory,
-      rarity,
-      specification,
-      metal,
-      remarks,
-      quantity,
-      images,
-      custom_url,
-      video,
-      current_price,
-      initial_price,
-      note,
-      sold,
-      type_series,
-      instock,
-      keyword,
-      cover_pic,
-      hidden,
-      approved,
-      createdAt,
-      updatedAt from products where hidden = 0 and userId = ${userId}`, { type: QueryTypes.SELECT })
+
+      const offset = page * 10
+
+      let get_data;
+      if (page == "-1") {
+        get_data = await MyQuery.query(`select id,
+          userId,
+          sku_code,
+          name,
+          description,
+          issue_year,
+          item_condition,
+          (select a.catName from categories a where id = category ) as category,
+          varities,
+          city,
+          ruler,
+          denomination,
+          signatory,
+          rarity,
+          specification,
+          metal,
+          remarks,
+          quantity,
+          images,
+          custom_url,
+          video,
+          current_price,
+          initial_price,
+          note,
+          sold,
+          type_series,
+          instock,
+          keyword,
+          cover_pic,
+          hidden,
+          approved,
+          createdAt,
+          updatedAt from products where hidden = 0 and userId = ${userId}`, { type: QueryTypes.SELECT })
+      } else {
+        get_data = await MyQuery.query(`select id,
+       userId,
+       sku_code,
+       name,
+       description,
+       issue_year,
+       item_condition,
+       (select a.catName from categories a where id = category ) as category,
+       varities,
+       city,
+       ruler,
+       denomination,
+       signatory,
+       rarity,
+       specification,
+       metal,
+       remarks,
+       quantity,
+       images,
+       custom_url,
+       video,
+       current_price,
+       initial_price,
+       note,
+       sold,
+       type_series,
+       instock,
+       keyword,
+       cover_pic,
+       hidden,
+       approved,
+       createdAt,
+       updatedAt from products where hidden = 0 and userId = ${userId}
+        LIMIT 10
+         OFFSET ${offset}`, { type: QueryTypes.SELECT })
+      }
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -642,6 +732,7 @@ class codeController {
       commonController.errorMessage(`${error}`, res);
     }
   }
+
   async get_wallet_balance(payload: any, res: Response) {
     try {
       const { userId } = payload
@@ -662,8 +753,6 @@ class codeController {
     }
   }
 
-
-
   async get_categories(payload: any, res: Response) {
     try {
       const get_cats = await db.categories.findAll({
@@ -678,11 +767,16 @@ class codeController {
 
   async get_all_categories_public(payload: any, res: Response) {
     try {
-      const get_cats = await db.categories.findAll({
-        where: {
-          active: true
-        }
-      })
+      const { page } = payload
+      const offset = page * 10
+      let get_cats;
+      if (page == "-1") {
+        get_cats = await MyQuery.query(`select * from categories where active = 1  `, { type: QueryTypes.SELECT })
+
+      } else {
+        get_cats = await MyQuery.query(`select * from categories where active = 1 limit 10 offset ${offset} `, { type: QueryTypes.SELECT })
+
+      }
       commonController.successMessage(get_cats, "All categories", res)
 
     } catch (e) {
@@ -693,7 +787,6 @@ class codeController {
 
   async get_category_by_id(payload: any, res: Response) {
     const { id } = payload
-
     try {
       const get_cats = await db.categories.findOne({
         where: {
@@ -756,15 +849,32 @@ class codeController {
 
   async all_products_public(payload: any, res: Response) {
     try {
-      const get_buy = await MyQuery.query(`
-        SELECT 
-          name, 
-          initial_price,
-          cover_pic,
-          (SELECT a.name FROM users a WHERE a.id = userId) AS creator 
-        FROM products 
-        WHERE hidden = 0;
-      `, { type: QueryTypes.SELECT });
+      const { page } = payload
+      const offset = page * 10
+      let get_buy;
+      if (page == "-1") {
+
+        get_buy = await MyQuery.query(`
+          SELECT 
+            name, 
+            initial_price,
+            cover_pic,
+            (SELECT a.name FROM users a WHERE a.id = userId) AS creator 
+          FROM products 
+          WHERE hidden = 0 ;
+        `, { type: QueryTypes.SELECT });
+      } else {
+        get_buy = await MyQuery.query(`
+          SELECT 
+            name, 
+            initial_price,
+            cover_pic,
+            (SELECT a.name FROM users a WHERE a.id = userId) AS creator 
+          FROM products 
+          WHERE hidden = 0 LIMIT 10
+          OFFSET ${offset};
+        `, { type: QueryTypes.SELECT });
+      }
       const products = get_buy.map((item: any) => ({ ...item }));
       console.log(get_buy, "get_buy");
       console.log(products);

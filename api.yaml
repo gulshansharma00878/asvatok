@@ -459,6 +459,18 @@ paths:
       summary: Return all logged in user's Products hidden also.
       tags:
         - Products
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                page:
+                  type: string
+                  minLength: 1
+                  description: number of page.
+               required:
+                 - page
       security:
         - BearerAuth: []
       responses: 
@@ -688,6 +700,18 @@ paths:
       summary: All products with public access
       tags:
         - Products
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                page:
+                  type: string
+                  minLength: 1
+                  description: number of page.
+               required:
+                 - page
       responses:
         '200':
          description: OK
@@ -755,6 +779,33 @@ paths:
         '500':
          description: Internal Server Error OR authorization header must be provided.
 
+  /api/v1/member/get_product_by_user:
+    post:
+      summary: get product of user that are apporved only!
+      tags:
+        - Products
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                page:
+                  type: string
+                  minLength: 1
+                  description: number of page.
+               required:
+                 - page
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
   /api/v1/member/approve_product:
     post:
       summary: add balance to user
@@ -772,21 +823,6 @@ paths:
                   description: id of product.
                required:
                  - id
-      security:
-       - BearerAuth: []
-      responses:
-        '200':
-         description: OK
-        '400':
-         description: Bad Request
-        '500':
-         description: Internal Server Error OR authorization header must be provided.
-
-  /api/v1/member/get_product_by_user:
-    post:
-      summary: get product of user that are apporved only!
-      tags:
-        - Products
       security:
        - BearerAuth: []
       responses:
@@ -817,6 +853,18 @@ paths:
       summary: All category with public access
       tags:
         - Category
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                page:
+                  type: string
+                  minLength: 1
+                  description: number of page.
+               required:
+                 - page
       security:
        - BearerAuth: []
       responses:
