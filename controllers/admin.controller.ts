@@ -11,9 +11,11 @@ class userController {
 
   async all_buy_requests(req: Request, res: Response) {
     const userId = (req as any).user?.id;
+    const { page } = req.body;
+
     try {
       await codeController.all_buy_requests(
-        { userId },
+        { userId,page },
         res
       );
     } catch (e) {
@@ -79,7 +81,62 @@ class userController {
     }
   }
 
+  async get_all_kyc(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const { id,page } = req.body;
+    try {
+      await codeController.get_all_kyc(
+        { userId, id,page },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
 
+
+  async get_kyc_by_id(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const { id } = req.body;
+    try {
+      await codeController.get_kyc_by_id(
+        { userId, id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async approve_kyc(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const { id } = req.body;
+    try {
+      await codeController.approve_kyc(
+        { userId, id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async reject_kyc(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const { id } = req.body;
+    try {
+      await codeController.reject_kyc(
+        { userId, id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
 
   
 }

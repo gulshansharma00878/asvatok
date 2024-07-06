@@ -15,15 +15,35 @@ class codeController {
 
   async all_buy_requests(payload: any, res: Response) {
     try {
-      const get_buy = await MyQuery.query(`SELECT x.id,x.userId,
-    x.product_id,
-    0 as quantity,
-    x.amount,
-    (select a.name from users a where a.id = x.userId) as name,
-    (select b.amount from wallets b where b.userId = x.userId) as user_amount,
-    x.active,
-    x.createdAt
-    FROM buys x;`, { type: QueryTypes.SELECT })
+
+      const { page } = payload;
+
+      const offset = page * 10
+
+      let get_buy;
+
+      if (page == "-1") {
+        get_buy = await MyQuery.query(`SELECT x.id,x.userId,
+        x.product_id,
+        0 as quantity,
+        x.amount,
+        (select a.name from users a where a.id = x.userId) as name,
+        (select b.amount from wallets b where b.userId = x.userId) as user_amount,
+        x.active,
+        x.createdAt
+        FROM buys x;`, { type: QueryTypes.SELECT })
+      } else {
+        get_buy = await MyQuery.query(`SELECT x.id,x.userId,
+        x.product_id,
+         0 as quantity,
+        x.amount,
+        (select a.name from users a where a.id = x.userId) as name,
+        (select b.amount from wallets b where b.userId = x.userId) as user_amount,
+          x.active,
+        x.createdAt
+        FROM buys x limit 10 offset ${offset};`, { type: QueryTypes.SELECT })
+      }
+
       commonController.successMessage(get_buy, "All buy request", res)
 
     } catch (e) {
@@ -87,7 +107,6 @@ class codeController {
     }
   }
 
-
   async add_balance_to_user(payload: any, res: Response) {
     try {
       const { userId, id, amount } = payload
@@ -134,6 +153,86 @@ class codeController {
       })
 
       commonController.successMessage(get_Product, "approved asset", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+
+  async get_all_kyc(payload: any, res: Response) {
+    try {
+      const { userId, id, page } = payload
+
+      const offset = page * 10
+      let data;
+      if (page == "-1") {
+        data = await MyQuery.query(`select * from kycs `, { type: QueryTypes.SELECT })
+      } else {
+        data = await MyQuery.query(`select * from kycs limit 10 offset ${offset} `, { type: QueryTypes.SELECT })
+      }
+      commonController.successMessage(data, "approved asset", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async get_kyc_by_id(payload: any, res: Response) {
+    try {
+      const { userId, id } = payload
+
+      let data = await db.kycs.findOne({
+        where: {
+          id
+        }
+      })
+      commonController.successMessage(data, "approved asset", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async approve_kyc(payload: any, res: Response) {
+    try {
+      const { userId, id } = payload
+
+      let data = await db.kycs.findOne({
+        where: {
+          id
+        }
+      })
+      if (data) {
+        data.update({
+          accepted: 1
+        })
+      }
+      commonController.successMessage(data, "approved asset", res)
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async reject_kyc(payload: any, res: Response) {
+    try {
+      const { userId, id } = payload
+
+      let data = await db.kycs.findOne({
+        where: {
+          id
+        }
+      })
+      if (data) {
+        data.update({
+          accepted: 2
+        })
+      }
+      commonController.successMessage(data, "approved asset", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);

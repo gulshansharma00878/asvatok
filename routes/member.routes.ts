@@ -63,6 +63,10 @@ router.post("/reject_buy_request",adminController.reject_buy_request)
 router.post("/all_buy_requests",adminController.all_buy_requests)
 router.post("/add_balance_to_user",adminController.add_balance_to_user)
 router.post("/approve_product",adminController.approve_product)
+router.post("/get_all_kyc",adminController.get_all_kyc)
+router.post("/get_kyc_by_id",adminController.get_kyc_by_id)
+router.post("/approve_kyc",adminController.approve_kyc)
+router.post("/reject_kyc",adminController.reject_kyc)
 
 
 

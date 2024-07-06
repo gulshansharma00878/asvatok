@@ -523,6 +523,20 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+
+  async get_product_by_cat(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    try {
+      await codeController.get_product_by_cat(
+        { userId},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
  
 }
 

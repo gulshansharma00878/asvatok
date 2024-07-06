@@ -418,6 +418,9 @@ paths:
                   description: Array of image URLs
                   items:
                     type: string
+                contactNumber: 
+                  type: string
+                  description: contactNumber
       #         required: 
       #           - sku_code
       #           - name
@@ -661,17 +664,17 @@ paths:
       requestBody:
         content:
           application/json:
-             schema:
-               type: object
-               properties:
-                 id:
-                   type: string
-                   minLength: 1
-                   description: id of buy request.
-               required:
-                 - id
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id of buy request.
+                required:
+                - id
       security:
-       - BearerAuth: []
+      - BearerAuth: []
       responses:
         '200':
          description: OK
@@ -685,6 +688,18 @@ paths:
       summary: all buy request for admin
       tags:
         - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                page:
+                  type: string
+                  minLength: 1
+                  description: number of page.
+               required:
+                  - page
       security:
        - BearerAuth: []
       responses:
@@ -875,8 +890,141 @@ paths:
         '500':
          description: Internal Server Error OR authorization header must be provided.
 
+  /api/v1/member/get_all_kyc:
+    post:
+      summary: All Kyc
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                page:
+                  type: string
+                  minLength: 1
+                  description: number of page min -1.
+               required:
+                 - page
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/get_kyc_by_id:
+    post:
+      summary: Get kyc by id
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id of kyc from all data
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/approve_kyc:
+    post:
+      summary: approve kyc
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id of kyc data to approve.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/reject_kyc:
+    post:
+      summary: Reject kyc
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
   
-  
+  /api/v1/member/reject_kyc:
+    post:
+      summary: Reject kyc
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
 
 
 
