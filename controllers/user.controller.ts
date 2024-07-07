@@ -431,9 +431,10 @@ class userController {
 
   async get_all_categories_public(req: Request, res: Response) {
     const userId = (req as any).user?.id;
+    const { page } = req.body;
     try {
       await codeController.get_all_categories_public(
-        { userId },
+        { userId, page },
         res
       );
     } catch (e) {
