@@ -823,7 +823,7 @@ paths:
 
   /api/v1/member/approve_product:
     post:
-      summary: add balance to user
+      summary: Approve product
       tags:
         - Admin
       requestBody:
@@ -1025,6 +1025,190 @@ paths:
         '500':
          description: Internal Server Error OR authorization header must be provided.
 
+  /api/v1/member/all_product_admin:
+    post:
+      summary: All products Admin
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                page:
+                  type: string
+                  minLength: 1
+                  description: page number start from 1.
+               required:
+                 - page
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/add_product_admin:
+    post:
+      summary: Add auto approved Products.
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sku_code: 
+                  type: string
+                  description: SKU code
+                cover_pic:
+                  type: string
+                  description: cover picture of product
+                name: 
+                  type: string
+                  description: Product name
+                description: 
+                  type: string
+                  description: Product description
+                issue_year: 
+                  type: string
+                  description: Year of issue
+                item_condition: 
+                  type: string
+                  description: Condition of the item
+                category: 
+                  type: string
+                  description: Product category
+                varities: 
+                  type: string
+                  description: Varieties
+                city: 
+                  type: string
+                  description: City
+                ruler: 
+                  type: string
+                  description: Ruler
+                denomination: 
+                  type: string
+                  description: Denomination
+                signatory: 
+                  type: string
+                  description: Signatory
+                rarity: 
+                  type: string
+                  description: Rarity
+                specification: 
+                  type: string
+                  description: Specification
+                metal: 
+                  type: string
+                  description: Metal
+                remarks: 
+                  type: string
+                  description: Remarks
+                quantity: 
+                  type: string
+                  description: Quantity
+                custom_url: 
+                  type: string
+                  description: Custom URL
+                video: 
+                  type: string
+                  description: Video URL
+                current_price: 
+                  type: string
+                  description: Current price
+                initial_price: 
+                  type: string
+                  description: Initial price
+                note: 
+                  type: string
+                  description: Note
+                sold: 
+                  type: string
+                  description: Sold status
+                type_series: 
+                  type: string
+                  description: Type series
+                instock: 
+                  type: string
+                  description: In stock status
+                keyword: 
+                  type: string
+                  description: Keyword
+                img: 
+                  type: array
+                  description: Array of image URLs
+                  items:
+                    type: string
+                contactNumber: 
+                  type: string
+                  description: contactNumber
+      #         required: 
+      #           - sku_code
+      #           - name
+      #           - description
+      #           - issue_year
+      #           - item_condition
+      #           - category
+      #           - varities
+      #           - city
+      #           - ruler
+      #           - denomination
+      #           - signatory
+      #           - rarity
+      #           - specification
+      #           - metal
+      #           - remarks
+      #           - quantity
+      #           - custom_url
+      #           - current_price
+      #           - initial_price
+      #           - note
+      #           - sold
+      #           - type_series
+      #           - instock
+      #           - keyword
+      #           - hidden
+      security:  
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error OR authorization header must be provided
+
+  /api/v1/member/get_product_admin_by_id:
+    post:
+      summary: Get product by id.
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: 
+                  type: string
+                  minLength: 1
+                  description: product id.
+              required: 
+                - id
+      security:
+        - BearerAuth: []
+      responses: 
+        '200':
+          description: OK
+     
+ 
 
 
 

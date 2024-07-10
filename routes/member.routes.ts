@@ -68,6 +68,10 @@ router.post("/get_kyc_by_id",adminController.get_kyc_by_id)
 router.post("/approve_kyc",adminController.approve_kyc)
 router.post("/reject_kyc",adminController.reject_kyc)
 
+router.post("/all_product_admin",adminController.all_product_admin)
+router.post("/add_product_admin",adminController.add_product_admin)
+router.post("/get_product_admin_by_id",adminController.get_product_admin_by_id)
+
 
 
 

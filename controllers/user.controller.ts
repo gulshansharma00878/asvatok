@@ -228,6 +228,7 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+  
   async add_product(req: Request, res: Response) {
     const userId = (req as any).user.id;
     const {

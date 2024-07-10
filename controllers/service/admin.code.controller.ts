@@ -240,6 +240,215 @@ class codeController {
     }
   }
 
+  async all_product_admin(payload: any, res: Response) {
+    const { userId, page } = payload;
+    try {
+      const offset = page * 10
+      let get_data;
+      if (page == "-1") {
+        get_data = await MyQuery.query(`
+          SELECT 
+            id,
+            userId,
+            sku_code,
+            name,
+            description,
+            issue_year,
+            item_condition,
+            (SELECT a.catName FROM categories a WHERE a.id = category) AS category,
+            varities,
+            city,
+            ruler,
+            denomination,
+            signatory,
+            rarity,
+            specification,
+            metal,
+            remarks,
+            quantity,
+            images,
+            custom_url,
+            video,
+            current_price,
+            initial_price,
+            note,
+            sold,
+            type_series,
+            instock,
+            keyword,
+            cover_pic,
+            hidden,
+            approved,
+            createdAt,
+            updatedAt
+          FROM products`, { type: QueryTypes.SELECT });
+      } else {
+        get_data = await MyQuery.query(`
+          SELECT 
+            id,
+            userId,
+            sku_code,
+            name,
+            description,
+            issue_year,
+            item_condition,
+            (SELECT a.catName FROM categories a WHERE a.id = category) AS category,
+            varities,
+            city,
+            ruler,
+            denomination,
+            signatory,
+            rarity,
+            specification,
+            metal,
+            remarks,
+            quantity,
+            images,
+            custom_url,
+            video,
+            current_price,
+            initial_price,
+            note,
+            sold,
+            type_series,
+            instock,
+            keyword,
+            cover_pic,
+            hidden,
+            approved,
+            createdAt,
+            updatedAt
+          FROM products
+          LIMIT 10
+          OFFSET ${offset}
+        `, { type: QueryTypes.SELECT });
+      }
+      commonController.successMessage(get_data, "all Products Data admin", res);
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async add_product_admin(payload: any, res: Response) {
+    try {
+      const { userId, sku_code,
+        name,
+        description,
+        issue_year,
+        item_condition,
+        category,
+        varities,
+        city,
+        ruler,
+        denomination,
+        signatory,
+        rarity,
+        specification,
+        metal,
+        remarks,
+        quantity,
+        custom_url,
+        video,
+        current_price,
+        initial_price,
+        note,
+        sold,
+        type_series,
+        instock,
+        keyword, images, cover_pic } = payload
+
+      let proId = 0
+
+      const getPro = await MyQuery.query(`select id from products order by id desc limit 1`, { type: QueryTypes.SELECT })
+      if (getPro.length > 0) {
+        proId = getPro[0].id
+      }
+
+      const get_catname = await db.categories.findOne({
+        where: {
+          id: category
+        }
+      })
+      const catName = (get_catname.catName).replace(" ", "")
+      const auto_sku = `${catName}/${name}/${Number(proId) + 1}`
+      const add_pro = await db.products.create({
+        userId, sku_code: auto_sku,
+        name,
+        description,
+        issue_year,
+        item_condition,
+        category,
+        varities,
+        city,
+        ruler,
+        denomination,
+        signatory,
+        rarity,
+        specification,
+        metal,
+        remarks,
+        quantity,
+        custom_url,
+        video,
+        current_price,
+        initial_price,
+        note,
+        sold,
+        type_series,
+        instock,
+        keyword,
+        hidden: 0, images, approved: 1, cover_pic
+      })
+      commonController.successMessage(add_pro, "product added", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
+    }
+  }
+
+  async get_product_admin_by_id(payload: any, res: Response) {
+    const { userId, id } = payload
+    try {
+      const get_data = await MyQuery.query(`select id,
+      userId,
+      sku_code,
+      name,
+      description,
+      issue_year,
+      item_condition,
+      (select a.catName from categories a where id = category ) as category,
+      varities,
+      city,
+      ruler,
+      denomination,
+      signatory,
+      rarity,
+      specification,
+      metal,
+      remarks,
+      quantity,
+      images,
+      custom_url,
+      video,
+      current_price,
+      initial_price,
+      note,
+      sold,
+      type_series,
+      instock,
+      keyword,
+      cover_pic,
+      hidden,
+      approved,
+      createdAt,
+      updatedAt from products where id=${id} `, { type: QueryTypes.SELECT })
+      commonController.successMessage(get_data, "products Data", res)
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
+    }
+  }
 
 
 }
