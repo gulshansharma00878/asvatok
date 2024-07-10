@@ -181,7 +181,7 @@ class userController {
       instock,
       keyword,
       hidden,
-      cover_pic,
+      cover_pic,contactNumber,
       img // Accept the images array from the request body
     } = req.body;
 
@@ -248,7 +248,7 @@ class userController {
         keyword,
         hidden,
         images: imageUrls, // Use the processed image URLs
-        cover_pic: cover_pic_
+        cover_pic: cover_pic_,contactNumber
       }, res);
     } catch (e) {
       console.warn(e);

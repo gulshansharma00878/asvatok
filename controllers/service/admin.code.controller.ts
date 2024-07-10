@@ -139,7 +139,7 @@ class codeController {
       const { userId, id } = payload
 
       const get_buy = await db.products.update({
-        hidden: 0
+        hidden: 0,approved: 1
       }, {
         where: {
           id
@@ -152,7 +152,7 @@ class codeController {
         }
       })
 
-      commonController.successMessage(get_Product, "approved asset", res)
+      commonController.successMessage(get_Product, "approved product", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -280,7 +280,7 @@ class codeController {
             hidden,
             approved,
             createdAt,
-            updatedAt
+            updatedAt,contactNumber
           FROM products`, { type: QueryTypes.SELECT });
       } else {
         get_data = await MyQuery.query(`
@@ -441,7 +441,7 @@ class codeController {
       cover_pic,
       hidden,
       approved,
-      createdAt,
+      createdAt,contactNumber,
       updatedAt from products where id=${id} `, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {

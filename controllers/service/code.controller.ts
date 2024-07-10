@@ -369,7 +369,7 @@ class codeController {
         sold,
         type_series,
         instock,
-        keyword, images, cover_pic } = payload
+        keyword, images, cover_pic,contactNumber } = payload
 
       let proId = 0
 
@@ -411,7 +411,7 @@ class codeController {
         type_series,
         instock,
         keyword,
-        hidden: 1, images, approved: 0, cover_pic
+        hidden: 1, images, approved: 0, cover_pic,contactNumber
       })
       commonController.successMessage(add_pro, "product added", res)
 
@@ -462,7 +462,7 @@ class codeController {
             hidden,
             approved,
             createdAt,
-            updatedAt
+            updatedAt,contactNumber
           FROM products
           WHERE userId = ${userId}`, { type: QueryTypes.SELECT });
       } else {
@@ -500,7 +500,7 @@ class codeController {
             hidden,
             approved,
             createdAt,
-            updatedAt
+            updatedAt,contactNumber
           FROM products
           WHERE userId = ${userId}
           LIMIT 10
@@ -547,7 +547,7 @@ class codeController {
       cover_pic,
       hidden,
       approved,
-      createdAt,
+      createdAt,contactNumber,
       updatedAt from products where id=${id} `, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
@@ -595,7 +595,7 @@ class codeController {
           cover_pic,
           hidden,
           approved,
-          createdAt,
+          createdAt,contactNumber,
           updatedAt from products where hidden = 0 and userId = ${userId}`, { type: QueryTypes.SELECT })
       } else {
         get_data = await MyQuery.query(`select id,
@@ -629,7 +629,7 @@ class codeController {
        cover_pic,
        hidden,
        approved,
-       createdAt,
+       createdAt,contactNumber,
        updatedAt from products where hidden = 0 and userId = ${userId}
         LIMIT 10
          OFFSET ${offset}`, { type: QueryTypes.SELECT })
