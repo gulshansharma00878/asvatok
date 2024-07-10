@@ -10,6 +10,18 @@ const fs = require('fs');
 const path = require('path');
 import { promisify } from 'util';
 const unlinkAsync = promisify(fs.unlink);
+import Razorpay from "razorpay";
+import crypto from "crypto"
+import ShortUniqueId from "short-unique-id"
+import { clearScreenDown } from "readline";
+
+const key_id: any = process.env.RAZORPAY_API_KEY
+const key_secret: any = process.env.RAZORPAY_API_SECRET
+const instance = new Razorpay({
+  key_id,
+  key_secret
+});
+
 class codeController {
   async addUser(payload: any, res: Response) {
     const { email, password, name, mobile } = payload;
@@ -144,6 +156,7 @@ class codeController {
               {
                 id: checkUser.id,
                 email: checkUser.email,
+                admin: checkUser.admin
               },
               process.env.TOKEN_SECRET
             );
@@ -156,13 +169,13 @@ class codeController {
             if (checkKyc) {
 
               commonController.successMessage(
-                { token, kyc_accepted: checkKyc.accepted, email: checkUser.email, name: checkUser.name, mobile: checkUser.mobile },
+                { token, kyc_accepted: checkKyc.accepted, email: checkUser.email, name: checkUser.name, mobile: checkUser.mobile, admin: checkUser.admin },
                 "Login success",
                 res
               );
             } else {
               commonController.successMessage(
-                { token, kyc_accepted: 3, email: checkUser.email, name: checkUser.name, mobile: checkUser.mobile },
+                { token, kyc_accepted: 3, email: checkUser.email, name: checkUser.name, mobile: checkUser.mobile, admin: checkUser.admin },
                 "Login success",
                 res
               );
@@ -369,7 +382,7 @@ class codeController {
         sold,
         type_series,
         instock,
-        keyword, images, cover_pic,contactNumber } = payload
+        keyword, images, cover_pic, contactNumber } = payload
 
       let proId = 0
 
@@ -411,7 +424,7 @@ class codeController {
         type_series,
         instock,
         keyword,
-        hidden: 1, images, approved: 0, cover_pic,contactNumber
+        hidden: 1, images, approved: 0, cover_pic, contactNumber
       })
       commonController.successMessage(add_pro, "product added", res)
 
@@ -644,7 +657,6 @@ class codeController {
   async buy_request(payload: any, res: Response) {
     const { userId, product_id, amount } = payload
     try {
-
       const check_balance = await db.wallets.findOne({
         where: {
           userId
@@ -730,6 +742,49 @@ class codeController {
         console.error('Error cleaning up file:', unlinkError);
       }
       commonController.errorMessage(`${error}`, res);
+    }
+  }
+
+  async add_wallet_order(payload: any, res: Response) {
+    const { userId, amount } = payload
+    try {
+      const uid = new ShortUniqueId({ length: 16 });
+
+      let currency = "INR"
+      let receiptId = uid.rnd()
+      console.log(receiptId, "uid");
+      const options = {
+        amount: amount * 100,
+        currency,
+        receipt: receiptId,
+        payment_capture: 1,
+        notes: {
+          userId,
+        }
+      };
+
+      const order = await instance.orders.create(options);
+      if (order) {
+
+        console.log(order, "order");
+        const create_order = await db.wallets_histories.create({
+          userId,
+          order_id: order.id,
+          amount,
+          receipt: order.receipt,
+          order_created_at: order.created_at,
+          history_type: 1,
+          action: 0,
+          item: "none"
+        })
+        commonController.successMessage({ order, create_order }, "order request Data", res)
+      } else {
+        commonController.errorMessage("failed to generate order request", res)
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+      console.warn(e);
+
     }
   }
 
@@ -891,10 +946,35 @@ class codeController {
     try {
       const { page } = payload
       const offset = page * 10
-      let get_cats= await MyQuery.query(`select  from categories where active = 1  `, { type: QueryTypes.SELECT })
+      let get_cats = await MyQuery.query(`select  from categories where active = 1  `, { type: QueryTypes.SELECT })
 
-  
+
       commonController.successMessage(get_cats, "All categories", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+
+  async razor_verify_auth(payload: any, res: Response) {
+    try {
+      const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = payload
+      const body = razorpay_order_id + "|" + razorpay_payment_id;
+      const expectedSignature = crypto
+        .createHmac("sha256", key_id)
+        .update(body.toString())
+        .digest("hex");
+
+      const isAuthentic = expectedSignature === razorpay_signature;
+      if (isAuthentic === true) {
+
+        commonController.successMessage({}, "verification success", res)
+      } else {
+        commonController.errorMessage("verification failed", res)
+
+      }
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);

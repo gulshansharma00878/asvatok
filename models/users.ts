@@ -8,6 +8,8 @@ interface UsersAttributes {
   name: string;
   token: string;
   active: boolean;
+  admin:number
+
 }
 
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
@@ -18,6 +20,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     mobile!: string;
     token!: string;
     active!: boolean;
+    admin!:number
 
     static associate(models: any) {
       // Define associations here
@@ -35,6 +38,8 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       mobile: { type: DataTypes.STRING },
       token: { type: DataTypes.STRING },
       active: { type: DataTypes.BOOLEAN },
+      admin: { type: DataTypes.INTEGER },
+
     },
     {
       sequelize,

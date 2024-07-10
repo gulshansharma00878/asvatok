@@ -35,7 +35,9 @@
     "mysql2": "^3.10.1",
     "node-cron": "^3.0.3",
     "qrcode": "^1.5.3",
+    "razorpay": "^2.9.4",
     "sequelize": "^6.37.3",
+    "short-unique-id": "^5.2.0",
     "swagger-ui-express": "^5.0.1",
     "ts-node-dev": "^2.0.0",
     "yamljs": "^0.3.0"

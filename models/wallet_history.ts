@@ -5,17 +5,24 @@ interface UsersAttributes {
   userId: number;
   history_type: string;
   amount: string;
-  action: boolean;
+  action: number;
   item: string;
+  order_id: string
+  receipt: string
+  order_created_at: string
+
 }
 
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
   class Users extends Model<UsersAttributes> implements UsersAttributes {
     userId!: number;
-  history_type!: string;
-  amount!: string;
-  action!: boolean;
-  item!: string;
+    history_type!: string;
+    amount!: string;
+    action!: number;
+    item!: string;
+    order_id!: string
+    receipt!: string
+    order_created_at!: string
 
     static associate(models: any) {
       // Define associations here
@@ -30,8 +37,12 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       userId: { type: DataTypes.INTEGER },
       history_type: { type: DataTypes.STRING },
       amount: { type: DataTypes.STRING },
-      action: { type: DataTypes.BOOLEAN },
+      action: { type: DataTypes.INTEGER },
       item: { type: DataTypes.STRING },
+      order_id: { type: DataTypes.STRING },
+      receipt: { type: DataTypes.STRING },
+      order_created_at: { type: DataTypes.STRING },
+
     },
     {
       sequelize,

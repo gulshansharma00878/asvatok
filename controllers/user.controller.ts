@@ -402,6 +402,22 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+
+  async add_wallet_order(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {amount} = req.body;
+
+    try {
+      await codeController.add_wallet_order(
+        { userId,amount  },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
   async get_wallet_balance(req: Request, res: Response) {
     const userId = (req as any).user?.id;
     try {
@@ -530,6 +546,21 @@ class userController {
     const userId = (req as any).user?.id;
     try {
       await codeController.get_product_by_cat(
+        { userId},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async razor_verify_auth(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+
+    try {
+      await codeController.razor_verify_auth(
         { userId},
         res
       );

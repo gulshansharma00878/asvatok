@@ -45,6 +45,8 @@ router.post("/buy_request", userController.buy_request);
 router.post("/get_buy_requests",userController.get_buy_requests)
 
 router.post("/bulk_product_data", uploadFile.single("file"),userController.bulk_product_data);
+
+router.post("/add_wallet_order",userController.add_wallet_order)
 router.post("/get_wallet_balance",userController.get_wallet_balance)
 
 router.post("/get_product_by_id",userController.get_product_by_id)
@@ -56,6 +58,7 @@ router.post("/add_category",userController.add_category)
 router.post("/get_category_by_id",userController.get_category_by_id)
 router.post("/purchase_history",userController.purchase_history)
 
+router.post("/razor_verify_auth",userController.razor_verify_auth)
 
 // admin section
 router.post("/approve_buy_request",adminController.approve_buy_request)
