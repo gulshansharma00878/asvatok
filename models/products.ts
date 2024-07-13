@@ -106,7 +106,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       cover_pic: { type: DataTypes.TEXT },
       hidden: { type: DataTypes.BOOLEAN },
       approved: { type: DataTypes.BOOLEAN },
-      contactNumber: { type: DataTypes.INTEGER },
+      contactNumber: { type: DataTypes.STRING },
     },
     {
       sequelize,
