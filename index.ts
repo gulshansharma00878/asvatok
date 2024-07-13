@@ -7,6 +7,8 @@ import cors from "cors"; // Importing cors directly
 const jwt = require('jsonwebtoken')
 const bodyParser = require("body-parser");
 const { swaggerServe, swaggerSetup } = require("./config/config");
+const cron = require('node-cron');
+
 
 const app = express();
 
@@ -81,5 +83,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 db.sequelize.sync().then(() => {
   app.listen(port, async () => {
     console.log(`App Started on port ${port}`);
+    cron.schedule('*/5 * * * * *', () => {
+      console.log('running a task every minute');
+    });
   });
 });

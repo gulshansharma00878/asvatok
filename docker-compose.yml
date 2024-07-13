@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  coolify:
+    image: coollabsio/coolify:latest
+    container_name: coolify
+    ports:
+      - "4000:3000"  # Expose port 3000 of the container on port 4000 of the host
+    environment:
+      - COOLIFY_DATABASE_URL=file:./dev.db  # Correct environment variable for Coolify
+      - DATABASE_URL=file:./dev.db
+      - PORT=3000
+      - NODE_ENV=production
+      - COOLIFY_SECRET_KEY=352b6ad15452f1815c947817acefb456df9d6c3ab74d8797a23e84375e07afe1  # Add your generated secret key here
+      - COOLIFY_IS_ONLINE=false  # Run Coolify in offline mode
+    volumes:
+      - coolify_data:/app/data
+
+volumes:
+  coolify_data:
