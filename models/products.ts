@@ -32,7 +32,7 @@ interface UsersAttributes {
   cover_pic: string;
   hidden: boolean;
   approved: boolean;
-  contactNumber: number;
+  contactNumber: string;
 
 }
 
@@ -68,7 +68,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     cover_pic!: string;
     hidden!: boolean;
     approved!: boolean;
-    contactNumber!: number;
+    contactNumber!: string;
     static associate(models: any) {
       // Define associations here
     }
