@@ -982,6 +982,21 @@ class codeController {
     }
   }
 
+  async get_products_by_cat_id(payload: any, res: Response) {
+    try {
+      const { page, id } = payload
+      const offset = page * 10
+      let get_cats = await MyQuery.query(`select * from products where category = ${id}  `, { type: QueryTypes.SELECT })
+
+
+      commonController.successMessage(get_cats, "All categories", res)
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
 }
 
 export default new codeController();

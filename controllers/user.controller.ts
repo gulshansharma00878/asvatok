@@ -570,6 +570,21 @@ class userController {
     }
   }
 
+  async get_products_by_cat_id(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+
+    try {
+      await codeController.get_products_by_cat_id(
+        { userId, id},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
  
 }
 

@@ -1271,6 +1271,33 @@ paths:
          description: Bad Request
         '500':
          description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/get_products_by_cat_id:
+    post:
+      summary: get_products_by_cat_id
+      tags:
+        - Category
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: category id.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
   
 
 
