@@ -60,7 +60,6 @@ router.post("/purchase_history",userController.purchase_history)
 
 router.post("/razor_verify_auth",userController.razor_verify_auth)
 
-router.post("/get_products_by_cat_id",userController.get_products_by_cat_id)
 
 // admin section
 router.post("/approve_buy_request",adminController.approve_buy_request)

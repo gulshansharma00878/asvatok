@@ -475,7 +475,7 @@ class codeController {
             hidden,
             approved,
             createdAt,
-            updatedAt,contactNumber
+            updatedAt
           FROM products
           WHERE userId = ${userId}`, { type: QueryTypes.SELECT });
       } else {
@@ -513,7 +513,7 @@ class codeController {
             hidden,
             approved,
             createdAt,
-            updatedAt,contactNumber
+            updatedAt
           FROM products
           WHERE userId = ${userId}
           LIMIT 10
@@ -529,39 +529,40 @@ class codeController {
   async get_product_by_id(payload: any, res: Response) {
     const { userId, id } = payload
     try {
-      const get_data = await MyQuery.query(`select id,
-      userId,
-      sku_code,
-      name,
-      description,
-      issue_year,
-      item_condition,
-      (select a.catName from categories a where id = category ) as category,
-      varities,
-      city,
-      ruler,
-      denomination,
-      signatory,
-      rarity,
-      specification,
-      metal,
-      remarks,
-      quantity,
-      images,
-      custom_url,
-      video,
-      current_price,
-      initial_price,
-      note,
-      sold,
-      type_series,
-      instock,
-      keyword,
-      cover_pic,
-      hidden,
-      approved,
-      createdAt,contactNumber,
-      updatedAt from products where id=${id} `, { type: QueryTypes.SELECT })
+      const get_data = await MyQuery.query(`select a.id,
+      a.userId,
+      (select name from users where id = a.userId ) as user_name
+      a.sku_code,
+      a.name,
+      a.description,
+      a.issue_year,
+      a.item_condition,
+      (select b.catName from categories b where b.id = a.category ) as category,
+      a.varities,
+      a.city,
+      a.ruler,
+      a.denomination,
+      a.signatory,
+      a.rarity,
+      a.specification,
+      a.metal,
+      a.remarks,
+      a.quantity,
+      a.images,
+      a.custom_url,
+      a.video,
+      a.current_price,
+      a.initial_price,
+      a.note,
+      a.sold,
+      a.type_series,
+      a.instock,
+      a.keyword,
+      a.cover_pic,
+      a.hidden,
+      a.approved,
+      a.createdAt,
+      a.updatedAt from products a where a.id=${id} `, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -608,7 +609,7 @@ class codeController {
           cover_pic,
           hidden,
           approved,
-          createdAt,contactNumber,
+          createdAt,
           updatedAt from products where hidden = 0 and userId = ${userId}`, { type: QueryTypes.SELECT })
       } else {
         get_data = await MyQuery.query(`select id,
@@ -642,7 +643,7 @@ class codeController {
        cover_pic,
        hidden,
        approved,
-       createdAt,contactNumber,
+       createdAt,
        updatedAt from products where hidden = 0 and userId = ${userId}
         LIMIT 10
          OFFSET ${offset}`, { type: QueryTypes.SELECT })
@@ -986,7 +987,12 @@ class codeController {
     try {
       const { page, id } = payload
       const offset = page * 10
-      let get_cats = await MyQuery.query(`select * from products where category = ${id}  `, { type: QueryTypes.SELECT })
+      let get_cats = await MyQuery.query(`select SELECT 
+            name, 
+            initial_price,
+            cover_pic,
+            (SELECT a.name FROM users a WHERE a.id = userId) AS creator 
+         from products where category = ${id}  `, { type: QueryTypes.SELECT })
 
 
       commonController.successMessage(get_cats, "All categories", res)
