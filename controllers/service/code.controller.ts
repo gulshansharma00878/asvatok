@@ -1049,6 +1049,7 @@ class codeController {
     try {
       const gainers = await MyQuery.query(`
         SELECT 
+        id,
           name,
           initial_price,
           current_price,
@@ -1077,6 +1078,7 @@ class codeController {
     try {
       const losers = await MyQuery.query(`
         SELECT 
+        id,
           name,
           initial_price,
           current_price,
