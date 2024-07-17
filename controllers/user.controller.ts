@@ -585,6 +585,35 @@ class userController {
     }
   }
 
+  async top_gainers(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    // const {id}= req.body
+
+    try {
+      await codeController.top_gainers(
+        { userId},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  } 
+  
+  async top_losers(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    // const {id}= req.body
+
+    try {
+      await codeController.top_losers(
+        { userId},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
  
 }
 

@@ -11,6 +11,9 @@ router.post("/login", userController.login);
 router.post("/all_products_public",userController.all_products_public)
 router.post("/get_all_categories_public",userController.get_all_categories_public)
 
+router.post("/top_gainers",userController.top_gainers)
+router.post("/top_losers",userController.top_losers)
+
 router.post("/get_products_by_cat_id",userController.get_products_by_cat_id)
 
 

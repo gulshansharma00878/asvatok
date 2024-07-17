@@ -36,7 +36,7 @@ paths:
               required:
                 - email
                 - password
-      responses:
+        responses:
         '200':
           description: OK
         '400':
@@ -698,8 +698,13 @@ paths:
                   type: string
                   minLength: 1
                   description: id of buy request.
+                reason:
+                  type: string
+                  minLength: 1
+                  description: reason.
                 required:
                 - id
+                - reason
       security:
       - BearerAuth: []
       responses:
@@ -1040,8 +1045,13 @@ paths:
                   type: string
                   minLength: 1
                   description: id.
+                reason:
+                  type: string
+                  minLength: 1
+                  description: reason.
                required:
                  - id
+                 - reason
       security:
        - BearerAuth: []
       responses:
@@ -1296,7 +1306,96 @@ paths:
          description: Bad Request
         '500':
          description: Internal Server Error OR authorization header must be provided.
-  
+
+  /api/v1/member/update_product_quantity:
+    post:
+      summary: update_product_quantity
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id.
+                quantity:
+                  type: string
+                  minLength: 1
+                  description: quantity.
+               required:
+                 - id
+                 - quantity
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/update_product_price:
+    post:
+      summary: update_product_price
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id.
+                price:
+                  type: string
+                  minLength: 1
+                  description: price.
+               required:
+                 - id
+                 - price
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/auth/top_gainers:
+    post:
+      summary: top 10 gainers
+      tags:
+        - Gainer & loser
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/auth/top_losers:
+    post:
+      summary: Top 10 losers
+      tags:
+        - Gainer & loser
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
 
 
 

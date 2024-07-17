@@ -15,6 +15,7 @@ interface UsersAttributes {
   self_pic: string;
   sign: string;
   accepted: number;
+  reason: string
 }
 
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
@@ -32,6 +33,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     self_pic!: string;
     sign!: string;
     accepted!: number;
+    reason!: string
 
     static associate(models: any) {
       // Define associations here
@@ -56,6 +58,8 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       self_pic: { type: DataTypes.STRING },
       sign: { type: DataTypes.STRING },
       accepted: { type: DataTypes.INTEGER },
+      reason: { type: DataTypes.STRING },
+
     },
     {
       sequelize,

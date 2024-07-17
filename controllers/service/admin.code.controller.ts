@@ -18,6 +18,13 @@ class codeController {
 
       const { page } = payload;
 
+      const total_count = await MyQuery.query(`
+        SELECT 
+          count(*) as count
+        FROM buys`, { type: QueryTypes.SELECT });
+      const new_count = total_count[0].count
+      const total_pages = Math.ceil(new_count / 10);
+
       const offset = page * 10
 
       let get_buy;
@@ -44,7 +51,7 @@ class codeController {
         FROM buys x limit 10 offset ${offset};`, { type: QueryTypes.SELECT })
       }
 
-      commonController.successMessage(get_buy, "All buy request", res)
+      commonController.successMessage({get_buy, total_pages}, "All buy request", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -81,7 +88,7 @@ class codeController {
   }
 
   async reject_buy_request(payload: any, res: Response) {
-    const { userId, id } = payload
+    const { userId, id, reason } = payload
     try {
       const get_data = await db.buys.findOne({
         where: {
@@ -96,6 +103,10 @@ class codeController {
         })
         get_wallet.update({
           amount: Number(get_data.amount) + Number(get_wallet.amount)
+        })
+        get_data.update({
+          active:2,
+          reason
         })
         commonController.successMessage(get_data, "products Data", res)
       } else {
@@ -164,7 +175,12 @@ class codeController {
   async get_all_kyc(payload: any, res: Response) {
     try {
       const { userId, id, page } = payload
-
+      const total_count = await MyQuery.query(`
+        SELECT 
+          count(*) as count
+        FROM kycs `, { type: QueryTypes.SELECT });
+      const new_count = total_count[0].count
+      const total_pages = Math.ceil(new_count / 10);
       const offset = page * 10
       let data;
       if (page == "-1") {
@@ -172,7 +188,7 @@ class codeController {
       } else {
         data = await MyQuery.query(`select * from kycs limit 10 offset ${offset} `, { type: QueryTypes.SELECT })
       }
-      commonController.successMessage(data, "approved asset", res)
+      commonController.successMessage({data, total_pages}, "approved asset", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -220,7 +236,7 @@ class codeController {
 
   async reject_kyc(payload: any, res: Response) {
     try {
-      const { userId, id } = payload
+      const { userId, id, reason } = payload
 
       let data = await db.kycs.findOne({
         where: {
@@ -229,7 +245,8 @@ class codeController {
       })
       if (data) {
         data.update({
-          accepted: 2
+          accepted: 2,
+          reason
         })
       }
       commonController.successMessage(data, "approved asset", res)
@@ -243,6 +260,13 @@ class codeController {
   async all_product_admin(payload: any, res: Response) {
     const { userId, page } = payload;
     try {
+      const total_count = await MyQuery.query(`
+        SELECT 
+          count(*)
+        FROM products`, { type: QueryTypes.SELECT });
+
+        const total_pages = total_count / 10
+
       const offset = page * 10
       let get_data;
       if (page == "-1") {
@@ -250,6 +274,7 @@ class codeController {
           SELECT 
             id,
             userId,
+             (select name from users where id = a.userId ) as user_name,
             sku_code,
             name,
             description,
@@ -323,7 +348,7 @@ class codeController {
           OFFSET ${offset}
         `, { type: QueryTypes.SELECT });
       }
-      commonController.successMessage(get_data, "all Products Data admin", res);
+      commonController.successMessage({get_data,total_pages}, "all Products Data admin", res);
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
     }
@@ -450,6 +475,59 @@ class codeController {
     }
   }
 
+  async update_product_quantity(payload: any, res: Response) {
+    const { userId, id, quantity } = payload
+    try {
+      let pro_data = await db.products.findOne({
+        where:{
+          id
+        }
+      })
+      if(pro_data){
+        pro_data.update({
+          quantity
+        })
+      }
+
+      pro_data = await db.products.findOne({
+        where:{
+          id
+        }
+      })
+
+      commonController.successMessage(pro_data, "products Data", res)
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
+    }
+  }
+
+  async update_product_price(payload: any, res: Response) {
+    const { userId, id, price } = payload
+    try {
+      let pro_data = await db.products.findOne({
+        where:{
+          id
+        }
+      })
+      if(pro_data){
+        pro_data.update({
+          current_price: price
+        })
+      }
+
+      pro_data = await db.products.findOne({
+        where:{
+          id
+        }
+      })
+
+      commonController.successMessage(pro_data, "products Data", res)
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res)
+
+    }
+  }
 
 }
 

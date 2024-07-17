@@ -7,6 +7,8 @@ interface UsersAttributes {
   product_id: string;
   amount: string;
   active: number
+  reason: string
+  
 }
 
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
@@ -15,6 +17,8 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
   product_id!: string;
   amount!: string;
   active!: number
+  reason!: string
+
 
     static associate(models: any) {
       // Define associations here
@@ -30,6 +34,8 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       product_id: { type: DataTypes.STRING },
       amount: { type: DataTypes.STRING },
       active: { type: DataTypes.INTEGER },
+      reason: { type: DataTypes.STRING },
+
     },
     {
       sequelize,

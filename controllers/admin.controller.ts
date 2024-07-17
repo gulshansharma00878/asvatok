@@ -40,10 +40,10 @@ class userController {
   
   async reject_buy_request(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const { id } = req.body;
+    const { id,reason } = req.body;
     try {
       await codeController.reject_buy_request(
-        { userId, id },
+        { userId, id, reason },
         res
       );
     } catch (e) {
@@ -126,10 +126,10 @@ class userController {
 
   async reject_kyc(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const { id } = req.body;
+    const { id ,reason} = req.body;
     try {
       await codeController.reject_kyc(
-        { userId, id },
+        { userId, id, reason },
         res
       );
     } catch (e) {
@@ -262,6 +262,34 @@ class userController {
     try {
       await codeController.get_product_admin_by_id(
         { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async update_product_quantity(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id, quantity}= req.body
+    try {
+      await codeController.update_product_quantity(
+        { userId,id,quantity },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async update_product_price(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id, price}= req.body
+    try {
+      await codeController.update_product_price(
+        { userId,id,price },
         res
       );
     } catch (e) {

@@ -438,6 +438,12 @@ class codeController {
   async get_product(payload: any, res: Response) {
     const { userId, page } = payload;
     try {
+      const total_count = await MyQuery.query(`
+        SELECT 
+          count(*) as count
+        FROM products where userId = ${userId}`, { type: QueryTypes.SELECT });
+      const new_count = total_count[0].count
+      const total_pages = Math.ceil(new_count / 10);
       const offset = page * 10
       let get_data;
       if (page == "-1") {
@@ -520,7 +526,7 @@ class codeController {
           OFFSET ${offset}
         `, { type: QueryTypes.SELECT });
       }
-      commonController.successMessage(get_data, "Products Data", res);
+      commonController.successMessage({get_data, total_pages}, "Products Data", res);
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
     }
@@ -531,7 +537,7 @@ class codeController {
     try {
       const get_data = await MyQuery.query(`select a.id,
       a.userId,
-      (select name from users where id = a.userId ) as user_name
+      (select name from users where id = a.userId ) as user_name,
       a.sku_code,
       a.name,
       a.description,
@@ -573,6 +579,13 @@ class codeController {
   async get_product_by_user(payload: any, res: Response) {
     const { userId, id, page } = payload
     try {
+
+      const total_count = await MyQuery.query(`
+        SELECT 
+          count(*) as count
+        FROM products where hidden = 0 and userId = ${userId}`, { type: QueryTypes.SELECT });
+      const new_count = total_count[0].count
+      const total_pages = Math.ceil(new_count / 10);
 
       const offset = page * 10
 
@@ -648,7 +661,7 @@ class codeController {
         LIMIT 10
          OFFSET ${offset}`, { type: QueryTypes.SELECT })
       }
-      commonController.successMessage(get_data, "products Data", res)
+      commonController.successMessage({get_data, total_pages}, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
 
@@ -824,6 +837,13 @@ class codeController {
   async get_all_categories_public(payload: any, res: Response) {
     try {
       const { page } = payload
+
+      const total_count = await MyQuery.query(`
+        SELECT 
+          count(*) as count
+        FROM categories where active = 1`, { type: QueryTypes.SELECT });
+      const new_count = total_count[0].count
+      const total_pages = Math.ceil(new_count / 10);
       const offset = page * 10
       let get_cats;
       if (page == "-1") {
@@ -833,7 +853,7 @@ class codeController {
         get_cats = await MyQuery.query(`select * from categories where active = 1 limit 10 offset ${offset} `, { type: QueryTypes.SELECT })
 
       }
-      commonController.successMessage(get_cats, "All categories", res)
+      commonController.successMessage({get_cats, total_pages}, "All categories", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -905,6 +925,14 @@ class codeController {
 
   async all_products_public(payload: any, res: Response) {
     try {
+
+      const total_count = await MyQuery.query(`
+        SELECT 
+          count(*) as count
+        FROM products where hidden = 0`, { type: QueryTypes.SELECT });
+      const new_count = total_count[0].count
+      const total_pages = Math.ceil(new_count / 10);
+
       const { page } = payload
       const offset = page * 10
       let get_buy;
@@ -912,6 +940,7 @@ class codeController {
 
         get_buy = await MyQuery.query(`
           SELECT 
+          id, userId,
             name, 
             initial_price,
             cover_pic,
@@ -922,6 +951,7 @@ class codeController {
       } else {
         get_buy = await MyQuery.query(`
           SELECT 
+           id, userId,
             name, 
             initial_price,
             cover_pic,
@@ -935,7 +965,7 @@ class codeController {
       console.log(get_buy, "get_buy");
       console.log(products);
 
-      commonController.successMessage(products, "All products public", res);
+      commonController.successMessage({ products, total_pages }, "All products public", res);
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
       console.warn(e, "error");
@@ -946,11 +976,17 @@ class codeController {
   async get_product_by_cat(payload: any, res: Response) {
     try {
       const { page } = payload
+      const total_count = await MyQuery.query(`
+        SELECT 
+          count(*) as count
+        FROM categories where active = 1`, { type: QueryTypes.SELECT });
+      const new_count = total_count[0].count
+      const total_pages = Math.ceil(new_count / 10);
       const offset = page * 10
-      let get_cats = await MyQuery.query(`select  from categories where active = 1  `, { type: QueryTypes.SELECT })
+      let get_cats = await MyQuery.query(`select * from categories where active = 1  `, { type: QueryTypes.SELECT })
 
 
-      commonController.successMessage(get_cats, "All categories", res)
+      commonController.successMessage({get_cats , total_pages}, "All categories", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -986,8 +1022,14 @@ class codeController {
   async get_products_by_cat_id(payload: any, res: Response) {
     try {
       const { page, id } = payload
+      const total_count = await MyQuery.query(`
+        SELECT 
+          count(*) as count
+        FROM products where category = ${id}`, { type: QueryTypes.SELECT });
+      const new_count = total_count[0].count
+      const total_pages = Math.ceil(new_count / 10);
       const offset = page * 10
-      let get_cats = await MyQuery.query(`select SELECT 
+      let get_cats = await MyQuery.query(` SELECT 
             name, 
             initial_price,
             cover_pic,
@@ -995,7 +1037,7 @@ class codeController {
          from products where category = ${id}  `, { type: QueryTypes.SELECT })
 
 
-      commonController.successMessage(get_cats, "All categories", res)
+      commonController.successMessage({get_cats, total_pages}, "All categories", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -1003,6 +1045,63 @@ class codeController {
     }
   }
 
+  async top_gainers(req: any, res: Response) {
+    try {
+      const gainers = await MyQuery.query(`
+        SELECT 
+          name,
+          initial_price,
+          current_price,
+          cover_pic,
+          (current_price - initial_price) AS price_change,
+          (SELECT a.name FROM users a WHERE a.id = userId) AS creator
+        FROM products
+        WHERE hidden = 0
+        ORDER BY price_change DESC
+        LIMIT 10;
+      `, 
+      { type: QueryTypes.SELECT });
+  
+      const products = gainers.map((item: any) => ({ ...item }));
+      console.log(gainers, "gainers");
+      console.log(products);
+  
+      commonController.successMessage({ products }, "Top gainers", res);
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async top_losers(req: any, res: Response) {
+    try {
+      const losers = await MyQuery.query(`
+        SELECT 
+          name,
+          initial_price,
+          current_price,
+          cover_pic,
+          (current_price - initial_price) AS price_change,
+          (SELECT a.name FROM users a WHERE a.id = userId) AS creator
+        FROM products
+        WHERE hidden = 0
+        ORDER BY price_change ASC
+        LIMIT 10;
+      `, 
+      { type: QueryTypes.SELECT });
+  
+      const products = losers.map((item: any) => ({ ...item }));
+      console.log(losers, "losers");
+      console.log(products);
+  
+      commonController.successMessage({ products }, "Top losers", res);
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+  
+  
 }
 
 export default new codeController();
