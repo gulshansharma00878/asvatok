@@ -1397,5 +1397,45 @@ paths:
         '500':
          description: Internal Server Error OR authorization header must be provided.
 
+  /api/v1/member/get_all_users:
+    post:
+      summary: get_all_users
+      tags:
+        - Admin
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/get_user_by_id:
+    post:
+      summary: get_user_by_id
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
 
 

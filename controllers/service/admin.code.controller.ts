@@ -51,7 +51,7 @@ class codeController {
         FROM buys x limit 10 offset ${offset};`, { type: QueryTypes.SELECT })
       }
 
-      commonController.successMessage({get_buy, total_pages}, "All buy request", res)
+      commonController.successMessage({ get_buy, total_pages }, "All buy request", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -105,7 +105,7 @@ class codeController {
           amount: Number(get_data.amount) + Number(get_wallet.amount)
         })
         get_data.update({
-          active:2,
+          active: 2,
           reason
         })
         commonController.successMessage(get_data, "products Data", res)
@@ -150,7 +150,7 @@ class codeController {
       const { userId, id } = payload
 
       const get_buy = await db.products.update({
-        hidden: 0,approved: 1
+        hidden: 0, approved: 1
       }, {
         where: {
           id
@@ -188,7 +188,7 @@ class codeController {
       } else {
         data = await MyQuery.query(`select * from kycs limit 10 offset ${offset} `, { type: QueryTypes.SELECT })
       }
-      commonController.successMessage({data, total_pages}, "approved asset", res)
+      commonController.successMessage({ data, total_pages }, "approved asset", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -265,7 +265,7 @@ class codeController {
           count(*)
         FROM products`, { type: QueryTypes.SELECT });
 
-        const total_pages = total_count / 10
+      const total_pages = total_count / 10
 
       const offset = page * 10
       let get_data;
@@ -348,7 +348,7 @@ class codeController {
           OFFSET ${offset}
         `, { type: QueryTypes.SELECT });
       }
-      commonController.successMessage({get_data,total_pages}, "all Products Data admin", res);
+      commonController.successMessage({ get_data, total_pages }, "all Products Data admin", res);
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
     }
@@ -479,18 +479,18 @@ class codeController {
     const { userId, id, quantity } = payload
     try {
       let pro_data = await db.products.findOne({
-        where:{
+        where: {
           id
         }
       })
-      if(pro_data){
+      if (pro_data) {
         pro_data.update({
           quantity
         })
       }
 
       pro_data = await db.products.findOne({
-        where:{
+        where: {
           id
         }
       })
@@ -506,18 +506,18 @@ class codeController {
     const { userId, id, price } = payload
     try {
       let pro_data = await db.products.findOne({
-        where:{
+        where: {
           id
         }
       })
-      if(pro_data){
+      if (pro_data) {
         pro_data.update({
           current_price: price
         })
       }
 
       pro_data = await db.products.findOne({
-        where:{
+        where: {
           id
         }
       })
@@ -526,6 +526,57 @@ class codeController {
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
 
+    }
+  }
+
+  async getAllActiveArticles(payload: any, res: Response) {
+    try {
+      const articles = await db.articles.findAll({ where: { active: true } });
+
+      if (articles.length > 0) {
+        commonController.successMessage(articles, "All active articles", res);
+      } else {
+        commonController.errorMessage("No active articles found", res);
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async get_all_users(payload: any, res: Response) {
+    try {
+      const data = await MyQuery.query(`select u.id, u.email, u.name, u.mobile, u.active,u.createdAt, w.amount, w.active as wallet_active 
+from users u 
+left join
+wallets w on u.id = w.userId
+order by u.id desc`, { type: QueryTypes.SELECT })
+
+      commonController.successMessage(data, "All users data", res);
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async get_user_by_id(payload: any, res: Response) {
+    try {
+      const { id } = payload
+      const data = await MyQuery.query(`select u.id, u.email, u.name, u.mobile, u.active,u.createdAt, w.amount, w.active as wallet_active 
+from users u 
+left join
+wallets w on u.id = w.userId
+where u.id = ${id}
+order by u.id desc`, { type: QueryTypes.SELECT })
+
+      const userData = data[0]
+
+      commonController.successMessage(userData, " users data", res);
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
     }
   }
 

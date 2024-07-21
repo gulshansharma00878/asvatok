@@ -297,6 +297,34 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+
+  async get_all_users(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+    try {
+      await codeController.get_all_users(
+        { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async get_user_by_id(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+    try {
+      await codeController.get_user_by_id(
+        { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
 }
 
 export default new userController();

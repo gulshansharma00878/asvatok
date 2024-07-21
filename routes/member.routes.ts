@@ -78,6 +78,8 @@ router.post("/update_product_price",adminController.update_product_price)
 router.post("/all_product_admin",adminController.all_product_admin)
 router.post("/add_product_admin",adminController.add_product_admin)
 router.post("/get_product_admin_by_id",adminController.get_product_admin_by_id)
+router.post("/get_all_users",adminController.get_all_users)
+router.post("/get_user_by_id",adminController.get_user_by_id)
 
 
 

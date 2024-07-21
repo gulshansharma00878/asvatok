@@ -14,6 +14,8 @@ import Razorpay from "razorpay";
 import crypto from "crypto"
 import ShortUniqueId from "short-unique-id"
 import { clearScreenDown } from "readline";
+require('dotenv').config();
+
 
 const key_id: any = process.env.RAZORPAY_API_KEY
 const key_secret: any = process.env.RAZORPAY_API_SECRET
@@ -526,7 +528,7 @@ class codeController {
           OFFSET ${offset}
         `, { type: QueryTypes.SELECT });
       }
-      commonController.successMessage({get_data, total_pages}, "Products Data", res);
+      commonController.successMessage({ get_data, total_pages }, "Products Data", res);
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
     }
@@ -661,7 +663,7 @@ class codeController {
         LIMIT 10
          OFFSET ${offset}`, { type: QueryTypes.SELECT })
       }
-      commonController.successMessage({get_data, total_pages}, "products Data", res)
+      commonController.successMessage({ get_data, total_pages }, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
 
@@ -676,6 +678,22 @@ class codeController {
           userId
         }
       })
+
+      if (Number(amount) < 1) {
+        commonController.errorMessage(`Min trade amount is 1`, res)
+        return
+      }
+
+      const check_product = await db.products.findOne({
+        where: {
+          id: product_id
+        }
+      })
+
+      if (!check_product) {
+        commonController.errorMessage(`Select a product to trade`, res)
+        return
+      }
 
       console.log(check_balance.amount, "cehc", amount);
 
@@ -853,7 +871,7 @@ class codeController {
         get_cats = await MyQuery.query(`select * from categories where active = 1 limit 10 offset ${offset} `, { type: QueryTypes.SELECT })
 
       }
-      commonController.successMessage({get_cats, total_pages}, "All categories", res)
+      commonController.successMessage({ get_cats, total_pages }, "All categories", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -986,7 +1004,7 @@ class codeController {
       let get_cats = await MyQuery.query(`select * from categories where active = 1  `, { type: QueryTypes.SELECT })
 
 
-      commonController.successMessage({get_cats , total_pages}, "All categories", res)
+      commonController.successMessage({ get_cats, total_pages }, "All categories", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -1006,7 +1024,16 @@ class codeController {
 
       const isAuthentic = expectedSignature === razorpay_signature;
       if (isAuthentic === true) {
-
+        const updatingPayment = await db.wallethistories.findOne({
+          where: {
+            order_id: `${razorpay_order_id}`
+          }
+        })
+        if (updatingPayment) {
+          updatingPayment.update({
+            action: 1
+          })
+        }
         commonController.successMessage({}, "verification success", res)
       } else {
         commonController.errorMessage("verification failed", res)
@@ -1030,6 +1057,7 @@ class codeController {
       const total_pages = Math.ceil(new_count / 10);
       const offset = page * 10
       let get_cats = await MyQuery.query(` SELECT 
+        id,
             name, 
             initial_price,
             cover_pic,
@@ -1037,7 +1065,7 @@ class codeController {
          from products where category = ${id}  `, { type: QueryTypes.SELECT })
 
 
-      commonController.successMessage({get_cats, total_pages}, "All categories", res)
+      commonController.successMessage({ get_cats, total_pages }, "All categories", res)
 
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
@@ -1060,14 +1088,14 @@ class codeController {
         WHERE hidden = 0
         ORDER BY price_change DESC
         LIMIT 10;
-      `, 
-      { type: QueryTypes.SELECT });
-  
-      const products = gainers.map((item: any) => ({ ...item }));
+      `,
+        { type: QueryTypes.SELECT });
+
+      const data = gainers.map((item: any) => ({ ...item }));
       console.log(gainers, "gainers");
-      console.log(products);
-  
-      commonController.successMessage({ products }, "Top gainers", res);
+      console.log(data);
+
+      commonController.successMessage(data, "Top gainers", res);
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
       console.warn(e, "error");
@@ -1089,21 +1117,105 @@ class codeController {
         WHERE hidden = 0
         ORDER BY price_change ASC
         LIMIT 10;
-      `, 
-      { type: QueryTypes.SELECT });
-  
-      const products = losers.map((item: any) => ({ ...item }));
+      `,
+        { type: QueryTypes.SELECT });
+
+      const data = losers.map((item: any) => ({ ...item }));
       console.log(losers, "losers");
-      console.log(products);
-  
-      commonController.successMessage({ products }, "Top losers", res);
+      console.log(data);
+
+      commonController.successMessage(data, "Top losers", res);
     } catch (e) {
       commonController.errorMessage(`${e}`, res);
       console.warn(e, "error");
     }
   }
-  
-  
+
+  async createArticle(payload: any, res: Response) {
+    try {
+      const { title, writer, timestamp, category, content, cover_image } = payload;
+      const article = await db.articles.create({ title, writer, timestamp, category, content, cover_image, active: 1 });
+      if (article) {
+        commonController.successMessage(article, "Article created successfully", res);
+      } else {
+        commonController.errorMessage("Failed to create article", res);
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async getAllNonActiveArticles(payload: any, res: Response) {
+    try {
+      const articles = await db.articles.findAll({ where: { active: false } });
+      if (articles.length > 0) {
+        commonController.successMessage(articles, "All non-active articles", res);
+      } else {
+        commonController.errorMessage("No non-active articles found", res);
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+
+  async getArticleById(payload: any, res: Response) {
+    try {
+      const { id } = payload;
+      const article = await db.articles.findOne({ where: { id } });
+      if (article) {
+        commonController.successMessage(article, "Article found", res);
+      } else {
+        commonController.errorMessage("Article not found", res);
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async updateArticle(payload: any, res: Response) {
+    try {
+      const { id, title, writer, timestamp, category, content, cover_image, } = payload;
+      const [updated] = await db.articles.update(
+        { title, writer, timestamp, category, content, cover_image },
+        { where: { id } }
+      );
+      if (updated) {
+        const updatedArticle = await db.articles.findOne({ where: { id } });
+        commonController.successMessage(updatedArticle, "Article updated successfully", res);
+      } else {
+        commonController.errorMessage("Article not found", res);
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+  async deleteArticle(payload: any, res: Response) {
+    try {
+      const { id } = payload;
+      const deleted = await db.articles.destroy({ where: { id } });
+      if (deleted) {
+        commonController.successMessage(null, "Article deleted successfully", res);
+      } else {
+        commonController.errorMessage("Article not found", res);
+      }
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+
+
+
+
+
+
 }
 
 export default new codeController();

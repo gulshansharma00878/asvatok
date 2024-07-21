@@ -557,11 +557,11 @@ class userController {
 
   async razor_verify_auth(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const {id}= req.body
+    const {id, razorpay_payment_id, razorpay_order_id, razorpay_signature}= req.body
 
     try {
       await codeController.razor_verify_auth(
-        { userId},
+        { userId,razorpay_payment_id, razorpay_order_id, razorpay_signature},
         res
       );
     } catch (e) {
@@ -607,6 +607,81 @@ class userController {
     try {
       await codeController.top_losers(
         { userId},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async createArticle(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {title, writer, timestamp, category, content, cover_image}= req.body
+
+    try {
+      await codeController.createArticle(
+        { userId, title, writer, timestamp, category, content, cover_image},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async getAllNonActiveArticles(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    // const {id}= req.body
+
+    try {
+      await codeController.getAllNonActiveArticles(
+        { userId},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async getArticleById(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+
+    try {
+      await codeController.getArticleById(
+        { userId, id},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async updateArticle(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id, title, writer, timestamp, category, content, cover_image, }= req.body
+
+    try {
+      await codeController.updateArticle(
+        { userId , id, title, writer, timestamp, category, content, cover_image, },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async deleteArticle(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+
+    try {
+      await codeController.deleteArticle(
+        { userId, id },
         res
       );
     } catch (e) {
