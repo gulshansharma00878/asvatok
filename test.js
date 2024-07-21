@@ -12,23 +12,14 @@ async function razor_verify_auth(razorpay_payment_id, razorpay_order_id, razorpa
       const body = razorpay_order_id + "|" + razorpay_payment_id;
       console.log(body, "body");
       const expectedSignature = crypto
-        .createHmac("sha256", key_id)
+        .createHmac("sha256", key_secret)
         .update(body.toString())
         .digest("hex");
       console.log(expectedSignature ," expectedSignature");
       const isAuthentic = expectedSignature === razorpay_signature;
       if (isAuthentic === true) {
         console.log("true");
-        const updatingPayment = await db.wallethistories.findOne({
-          where:[
-            order_id
-          ]
-        })
-        if(updatingPayment){
-          updatingPayment.update({
-            action:1
-          })
-        }
+        
       } else {
         console.log("false");
       }

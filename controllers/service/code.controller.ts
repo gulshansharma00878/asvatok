@@ -1018,7 +1018,7 @@ class codeController {
       const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = payload
       const body = razorpay_order_id + "|" + razorpay_payment_id;
       const expectedSignature = crypto
-        .createHmac("sha256", key_id)
+        .createHmac("sha256", key_secret)
         .update(body.toString())
         .digest("hex");
 
