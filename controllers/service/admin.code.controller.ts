@@ -765,11 +765,13 @@ order by u.id desc`, { type: QueryTypes.SELECT })
   async approve_buy_trade(payload: any, res: Response) {
     try {
       const { id } = payload;
-  
+
+      
       // Fetch the buy trade details
       const checkBuyTrade = await db.buy_trades.findOne({
         where: { id },
       });
+      console.log("yes");
   
       if (!checkBuyTrade) {
         return commonController.errorMessage("Buy trade not found", res);
@@ -815,13 +817,34 @@ order by u.id desc`, { type: QueryTypes.SELECT })
       const buyingQuantity = parseFloat(checkBuyTrade.quantity);
       const sellingQuantity = parseFloat(checkSellTrade.quantity);
       const quantityToTrade = Math.min(buyingQuantity, sellingQuantity);
+
+      console.log(quantityToTrade, "quantityToTrade");
   
       // Calculate the total amount to be traded
       const totalAmount = checkBuyTrade.amount * quantityToTrade;
-  
+      console.log(totalAmount, "totalAmount");
+// return
       // Adjust wallet balances
       // await buyerWallet.update({ balance: buyerWallet.balance - totalAmount });
-      await sellerWallet.update({ balance: sellerWallet.balance + totalAmount });
+      await sellerWallet.update({ amount: parseFloat(sellerWallet.amount) + totalAmount });
+      await check_product.update({current_price:checkBuyTrade.amount})
+      const userProductAsset = await db.user_assets.findOne({
+        where: {
+          userId: checkBuyTrade.userId,
+          product_id: checkBuyTrade.product_id,
+        },
+      });
+      if(userProductAsset){
+        userProductAsset.update({
+          quantity: parseFloat(userProductAsset.quantity) + parseFloat(checkBuyTrade.quantity) 
+        })
+      }else{
+        await db.user_assets.create({
+            userId: checkBuyTrade.userId,
+            product_id: checkBuyTrade.product_id,
+            quantity: checkBuyTrade.quantity
+        });
+      }
   
       // Return success message
       commonController.successMessage(checkBuyTrade, "Buy trade approved", res);

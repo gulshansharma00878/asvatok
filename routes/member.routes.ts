@@ -90,7 +90,7 @@ router.post("/get_user_by_id",adminController.get_user_by_id)
 router.post("/approve_sell_trade",adminController.approve_sell_trade)
 router.post("/reject_sell_trade",adminController.reject_sell_trade)
 
-router.post("/approve_sell_trade",adminController.approve_buy_trade)
+router.post("/approve_buy_trade",adminController.approve_buy_trade)
 router.post("/reject_buy_trade",adminController.reject_buy_trade)
 
 
