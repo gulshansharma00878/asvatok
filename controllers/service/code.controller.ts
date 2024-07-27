@@ -384,7 +384,7 @@ class codeController {
         sold,
         type_series,
         instock,
-        keyword, images, cover_pic, contactNumber } = payload
+        keyword, images, cover_pic, contactNumber, currentQuantity } = payload
 
       let proId = 0
 
@@ -426,7 +426,7 @@ class codeController {
         type_series,
         instock,
         keyword,
-        hidden: 1, images, approved: 0, cover_pic, contactNumber
+        hidden: 1, images, approved: 0, cover_pic, contactNumber, currentQuantity
       })
       commonController.successMessage(add_pro, "product added", res)
 
@@ -483,7 +483,8 @@ class codeController {
             hidden,
             approved,
             createdAt,
-            updatedAt
+            updatedAt,
+            currentQuantity
           FROM products
           WHERE userId = ${userId}`, { type: QueryTypes.SELECT });
       } else {
@@ -521,7 +522,8 @@ class codeController {
             hidden,
             approved,
             createdAt,
-            updatedAt
+            updatedAt,
+            currentQuantity
           FROM products
           WHERE userId = ${userId}
           LIMIT 10
@@ -570,7 +572,7 @@ class codeController {
       a.hidden,
       a.approved,
       a.createdAt,
-      a.updatedAt from products a where a.id=${id} `, { type: QueryTypes.SELECT })
+      a.updatedAt,a.currentQuantity from products a where a.id=${id} `, { type: QueryTypes.SELECT })
       commonController.successMessage(get_data, "products Data", res)
     } catch (e) {
       commonController.errorMessage(`${e}`, res)
@@ -625,7 +627,7 @@ class codeController {
           hidden,
           approved,
           createdAt,
-          updatedAt from products where hidden = 0 and userId = ${userId}`, { type: QueryTypes.SELECT })
+          updatedAt,currentQuantity from products where hidden = 0 and userId = ${userId}`, { type: QueryTypes.SELECT })
       } else {
         get_data = await MyQuery.query(`select id,
        userId,
@@ -659,7 +661,7 @@ class codeController {
        hidden,
        approved,
        createdAt,
-       updatedAt from products where hidden = 0 and userId = ${userId}
+       updatedAt,currentQuantity from products where hidden = 0 and userId = ${userId}
         LIMIT 10
          OFFSET ${offset}`, { type: QueryTypes.SELECT })
       }
@@ -695,6 +697,23 @@ class codeController {
         return
       }
 
+      if(!(parseFloat(check_product.currentQuantity) > 0) ){
+        commonController.errorMessage(`The bucket is empty`, res)
+        return
+      }
+
+      const newSupplyCal = parseFloat(amount) / parseFloat(check_product.initial_price)
+      const newSupply = parseFloat(check_product.currentQuantity) - newSupplyCal
+
+      if (newSupplyCal > parseFloat(check_product.currentQuantity)) {
+        commonController.errorMessage(`Buying Quantity is greater than Product quantity`, res)
+        return
+      }
+
+      const update_supply = check_product.update({
+        currentQuantity: newSupply
+      })
+
       console.log(check_balance.amount, "cehc", amount);
 
 
@@ -703,8 +722,9 @@ class codeController {
           amount: Number(check_balance.amount) - Number(amount)
         })
         const add_request = await db.buys.create({
-          userId, product_id, amount, active: 0
+          userId, product_id, amount, active: 0, quantity: newSupplyCal
         })
+      
         commonController.successMessage(add_request, "buy requestI Data", res)
       } else {
         commonController.errorMessage(`insufficient balance`, res)
@@ -1211,6 +1231,97 @@ class codeController {
   }
 
 
+  async sell_trade(payload: any, res: Response) {
+    try {
+      const { userId,quantity,product_id,amount } = payload;
+
+ 
+      const findUserAssets = await db.user_assets.findOne({
+        where: {
+          userId,
+          product_id
+        }
+      }) 
+
+      if(!findUserAssets){
+        commonController.errorMessage(`No quantity available for this product`, res)
+        return
+      }
+
+      if(parseFloat(findUserAssets.quantity) < parseFloat(quantity)){
+        commonController.errorMessage(`Insufficient quantity`, res)
+        return
+      }
+
+      const newQuantity = parseFloat(findUserAssets.quantity) - parseFloat(quantity)
+
+      findUserAssets.update({
+        quantity:newQuantity
+      })
+
+      const newTrade = await db.sell_trades.create({
+        userId,
+        product_id,
+        quantity,
+        amount,
+        active: 0
+      })
+
+      commonController.successMessage(newTrade, " Sell trade created", res);
+
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
+
+
+  async buy_trade(payload: any, res: Response) {
+    try {
+      const { userId,quantity,product_id,amount } = payload;
+     
+      const findUserAssets = await db.wallets.findOne({
+        where: {
+          userId
+        }
+      }) 
+
+      const calAmount = parseFloat(amount) * parseFloat(quantity)
+
+      if(parseFloat(findUserAssets.amount)<0){
+        commonController.errorMessage(`Balance is less then 1 in your wallet`, res)
+        return
+      }
+
+      if(parseFloat(findUserAssets.amount) < (calAmount)){
+        commonController.errorMessage(`Insufficient Balance for the trade`, res)
+        return
+      }
+
+      const newBalance = parseFloat(findUserAssets.amount) - (calAmount)
+
+      findUserAssets.update({
+        amount:newBalance
+      })
+
+      const newTrade = await db.buy_trades.create({
+        userId,
+        product_id,
+        quantity,
+        amount,
+        active: 0
+      })
+
+      commonController.successMessage(newTrade, " buy trade created", res);
+
+
+
+    } catch (e) {
+      commonController.errorMessage(`${e}`, res);
+      console.warn(e, "error");
+    }
+  }
 
 
 

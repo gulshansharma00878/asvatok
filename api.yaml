@@ -421,6 +421,9 @@ paths:
                 contactNumber: 
                   type: string
                   description: contactNumber
+                currentQuantity: 
+                  type: string
+                  description: currentQuantity/supply
       #         required: 
       #           - sku_code
       #           - name
@@ -702,7 +705,7 @@ paths:
                   type: string
                   minLength: 1
                   description: reason.
-                required:
+              required:
                 - id
                 - reason
       security:
@@ -1322,13 +1325,13 @@ paths:
                   type: string
                   minLength: 1
                   description: id.
-                quantity:
+                currentQuantity:
                   type: string
                   minLength: 1
-                  description: quantity.
+                  description: currentQuantity/supply.
                required:
                  - id
-                 - quantity
+                 - currentQuantity
       security:
        - BearerAuth: []
       responses:
@@ -1437,5 +1440,184 @@ paths:
         '500':
          description: Internal Server Error OR authorization header must be provided.
 
+  /api/v1/member/sell_trade:
+    post:
+      summary: Add sell trade request.
+      tags:
+        - Trades
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id: 
+                  type: string
+                  minLength: 1
+                  description: product id.
+                amount: 
+                  type: string
+                  minLength: 1
+                  description: price.
+                quantity: 
+                  type: string
+                  minLength: 1
+                  description: quantity.
+              required: 
+                - product_id
+                - amount
+                - quantity
+      security:
+        - BearerAuth: []
+      responses: 
+        '200':
+          description: OK
+
+  /api/v1/member/approve_sell_trade:
+    post:
+      summary: approve sell trade
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                 id:
+                   type: string
+                   minLength: 1
+                   description: id of sell trade request.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/reject_sell_trade:
+    post:
+      summary: reject sell trade
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id of sell trade request.
+                # reason:
+                #   type: string
+                #   minLength: 1
+                #   description: reason.
+              required:
+                - id
+                # - reason
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/buy_trade:
+    post:
+      summary: Add buy trade request.
+      tags:
+        - Trades
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id: 
+                  type: string
+                  minLength: 1
+                  description: product id.
+                amount: 
+                  type: string
+                  minLength: 1
+                  description: price.
+                quantity: 
+                  type: string
+                  minLength: 1
+                  description: quantity.
+              required: 
+                - product_id
+                - amount
+                - quantity
+      security:
+        - BearerAuth: []
+      responses: 
+        '200':
+          description: OK
+
+  /api/v1/member/approve_buy_trade:
+    post:
+      summary: approve buy trade
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                 id:
+                   type: string
+                   minLength: 1
+                   description: id of buy trade request.
+               required:
+                 - id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/reject_buy_trade:
+    post:
+      summary: reject buy trade
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  minLength: 1
+                  description: id of buy trade request.
+              required:
+                - id
+                # - reason
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
 
 

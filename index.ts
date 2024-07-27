@@ -78,6 +78,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const status = err.status || 500;
   res.status(status).json({ error: { message: err.message } }); // Send error message instead of the entire error object
 });
+// const quantityToTrade = Math.min(100, 1000);
+// console.log(quantityToTrade);
 
 // Database synchronization and server startup
 db.sequelize.sync().then(() => {

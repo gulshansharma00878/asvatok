@@ -258,7 +258,7 @@ class userController {
       instock,
       keyword,
       hidden,
-      cover_pic,contactNumber,
+      cover_pic,contactNumber,currentQuantity,
       img // Accept the images array from the request body
     } = req.body;
 
@@ -325,7 +325,7 @@ class userController {
         keyword,
         hidden,
         images: imageUrls, // Use the processed image URLs
-        cover_pic: cover_pic_,contactNumber
+        cover_pic: cover_pic_,contactNumber,currentQuantity
       }, res);
     } catch (e) {
       console.warn(e);
@@ -690,6 +690,36 @@ class userController {
     }
   }
  
+  async sell_trade(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {quantity,product_id,amount}= req.body
+
+    try {
+      await codeController.sell_trade(
+        { userId,quantity,product_id,amount },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+
+  async buy_trade(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {quantity,product_id,amount}= req.body
+
+    try {
+      await codeController.buy_trade(
+        { userId,quantity,product_id,amount },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
 }
 
 export default new userController();

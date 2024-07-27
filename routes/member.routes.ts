@@ -60,6 +60,10 @@ router.post("/purchase_history",userController.purchase_history)
 
 router.post("/razor_verify_auth",userController.razor_verify_auth)
 
+// trade
+router.post("/sell_trade",userController.sell_trade)
+router.post("/buy_trade",userController.buy_trade)
+
 
 // admin section
 router.post("/approve_buy_request",adminController.approve_buy_request)
@@ -80,6 +84,14 @@ router.post("/add_product_admin",adminController.add_product_admin)
 router.post("/get_product_admin_by_id",adminController.get_product_admin_by_id)
 router.post("/get_all_users",adminController.get_all_users)
 router.post("/get_user_by_id",adminController.get_user_by_id)
+
+// trade admin
+
+router.post("/approve_sell_trade",adminController.approve_sell_trade)
+router.post("/reject_sell_trade",adminController.reject_sell_trade)
+
+router.post("/approve_sell_trade",adminController.approve_buy_trade)
+router.post("/reject_buy_trade",adminController.reject_buy_trade)
 
 
 

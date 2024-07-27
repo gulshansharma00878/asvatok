@@ -181,7 +181,7 @@ class userController {
       instock,
       keyword,
       hidden,
-      cover_pic,contactNumber,
+      cover_pic,contactNumber,currentQuantity,
       img // Accept the images array from the request body
     } = req.body;
 
@@ -248,7 +248,7 @@ class userController {
         keyword,
         hidden,
         images: imageUrls, // Use the processed image URLs
-        cover_pic: cover_pic_,contactNumber
+        cover_pic: cover_pic_,contactNumber,currentQuantity
       }, res);
     } catch (e) {
       console.warn(e);
@@ -272,10 +272,10 @@ class userController {
 
   async update_product_quantity(req: Request, res: Response) {
     const userId = (req as any).user?.id;
-    const {id, quantity}= req.body
+    const {id, currentQuantity}= req.body
     try {
       await codeController.update_product_quantity(
-        { userId,id,quantity },
+        { userId,id,currentQuantity },
         res
       );
     } catch (e) {
@@ -317,6 +317,62 @@ class userController {
     const {id}= req.body
     try {
       await codeController.get_user_by_id(
+        { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async approve_sell_trade(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+    try {
+      await codeController.approve_sell_trade(
+        { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async reject_sell_trade(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+    try {
+      await codeController.reject_sell_trade(
+        { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async approve_buy_trade(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+    try {
+      await codeController.approve_buy_trade(
+        { userId,id },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async reject_buy_trade(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id}= req.body
+    try {
+      await codeController.reject_buy_trade(
         { userId,id },
         res
       );
