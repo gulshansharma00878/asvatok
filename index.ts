@@ -85,11 +85,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 db.sequelize.sync().then(() => {
   app.listen(port, async () => {
     console.log(`App Started on port ${port}`);
-    let count = 0
-    cron.schedule('*/5 * * * * *', () => {
-      count = count + 1
-      console.log('running a task five second',count);
-    });
-    count = count
   });
 });
