@@ -2,7 +2,7 @@
 Common setup
 Clone the repo and install the dependencies.
 
-git clone https://github.com/gulshansharma00878/asvatok.git
+# git clone https://github.com/gulshansharma00878/asvatok.git
 
 cd the-example-app.nodejs
 # npm install
