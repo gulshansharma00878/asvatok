@@ -6,6 +6,8 @@ interface UsersAttributes {
   userId: number;
   product_id: string;
   amount: string;
+  approvedAmount: string;
+  fee: string;
   quantity: string;
   active: number
   reason: string
@@ -17,6 +19,8 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     userId!: number;
     product_id!: string;
     amount!: string;
+    approvedAmount!: string;
+    fee!: string;
     quantity!: string;
     active!: number
     reason!: string
@@ -35,6 +39,8 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       userId: { type: DataTypes.INTEGER },
       product_id: { type: DataTypes.STRING },
       amount: { type: DataTypes.STRING },
+      approvedAmount: { type: DataTypes.STRING },
+      fee: { type: DataTypes.STRING },
       quantity: { type: DataTypes.STRING },
       active: { type: DataTypes.INTEGER },
       reason: { type: DataTypes.STRING },

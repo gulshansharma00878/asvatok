@@ -11,13 +11,18 @@ sgMail.setApiKey(
 
 class commonController {
   sendEmail = async (to: any, subject: any, message: any) => {
-    const msg = {
-      to: to,
-      from: "stier.world.us@gmail.com",
-      subject: subject,
-      text: message,
-    };
-    await sgMail.send(msg);
+    try {
+      const msg = {
+        to: to,
+        from: "stier.world.us@gmail.com",
+        subject: subject,
+        html: message,
+      };
+      await sgMail.send(msg);
+    } catch (e) {
+      console.log(e);
+    }
+   
   };
 
  

@@ -7,6 +7,8 @@ interface UsersAttributes {
   product_id: string;
   quantity: string;
   amount: string;
+  fee: string;
+  totalQuantity: string;
   active: number
 
 }
@@ -17,6 +19,8 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
     product_id!: string;
     quantity!: string;
     amount!: string;
+  fee!: string;
+  totalQuantity!: string;
     active!: number
 
     static associate(models: any) {
@@ -33,6 +37,8 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       product_id: { type: DataTypes.STRING },
       quantity: { type: DataTypes.TEXT },
       amount: { type: DataTypes.TEXT },
+      fee: { type: DataTypes.TEXT },
+    totalQuantity: { type: DataTypes.TEXT },
       active: { type: DataTypes.INTEGER },
 
     },

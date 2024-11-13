@@ -1,21 +1,26 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import db from "../models";
 import commonController from "./common/common.controller";
 import codeController from "./service/admin.code.controller";
 const fs = require("fs");
-// import summary from "../htmls/summary";
+import { checkAdmin } from "../middleware/admin";
 // import event from "./service/event";
 
 class userController {
- 
 
-  async all_buy_requests(req: Request, res: Response) {
+
+  async all_buy_requests(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const { page } = req.body;
-
+    const { page, search } = req.body;
+    // console.log(checkAdmin(userId,res,next), "checkAdmin(userId)"); 
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+
       await codeController.all_buy_requests(
-        { userId,page },
+        { userId, page, search },
         res
       );
     } catch (e) {
@@ -24,12 +29,24 @@ class userController {
     }
   }
 
-  async approve_buy_request(req: Request, res: Response) {
+  async approve_buy_request(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const { id } = req.body;
+    const { id, amount} = req.body;
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+
+      if(!amount){
+        return commonController.errorMessage("Please enter amount", res)
+      }
+
+      if(!id){
+        return commonController.errorMessage("Id is missing", res)
+      }
       await codeController.approve_buy_request(
-        { userId, id },
+        { userId, id, amount },
         res
       );
     } catch (e) {
@@ -37,11 +54,15 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
-  
-  async reject_buy_request(req: Request, res: Response) {
+
+  async reject_buy_request(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const { id,reason } = req.body;
+    const { id, reason } = req.body;
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.reject_buy_request(
         { userId, id, reason },
         res
@@ -53,10 +74,14 @@ class userController {
   }
 
 
-  async add_balance_to_user(req: Request, res: Response) {
+  async add_balance_to_user(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
     const { id, amount } = req.body;
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.add_balance_to_user(
         { userId, id, amount },
         res
@@ -67,10 +92,14 @@ class userController {
     }
   }
 
-  async approve_product(req: Request, res: Response) {
+  async approve_product(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
     const { id } = req.body;
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.approve_product(
         { userId, id },
         res
@@ -81,12 +110,16 @@ class userController {
     }
   }
 
-  async get_all_kyc(req: Request, res: Response) {
+  async get_all_kyc(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const { id,page } = req.body;
+    const { id, page, search } = req.body;
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.get_all_kyc(
-        { userId, id,page },
+        { userId, id, page, search },
         res
       );
     } catch (e) {
@@ -96,10 +129,14 @@ class userController {
   }
 
 
-  async get_kyc_by_id(req: Request, res: Response) {
+  async get_kyc_by_id(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
     const { id } = req.body;
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.get_kyc_by_id(
         { userId, id },
         res
@@ -110,10 +147,14 @@ class userController {
     }
   }
 
-  async approve_kyc(req: Request, res: Response) {
+  async approve_kyc(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
     const { id } = req.body;
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.approve_kyc(
         { userId, id },
         res
@@ -124,10 +165,14 @@ class userController {
     }
   }
 
-  async reject_kyc(req: Request, res: Response) {
+  async reject_kyc(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const { id ,reason} = req.body;
+    const { id, reason } = req.body;
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.reject_kyc(
         { userId, id, reason },
         res
@@ -138,12 +183,16 @@ class userController {
     }
   }
 
-  async all_product_admin(req: Request, res: Response) {
+  async all_product_admin(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const { page } = req.body;
+    const { page, search} = req.body;
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.all_product_admin(
-        { userId, page },
+        { userId, page,search },
         res
       );
     } catch (e) {
@@ -152,10 +201,10 @@ class userController {
     }
   }
 
-  async add_product_admin(req: Request, res: Response) {
+  async update_product_admin(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user.id;
     const {
-      sku_code,
+      id,sku_code,
       name,
       description,
       issue_year,
@@ -181,46 +230,67 @@ class userController {
       instock,
       keyword,
       hidden,
-      cover_pic,contactNumber,currentQuantity,
+      cover_pic, contactNumber, currentQuantity,
       img // Accept the images array from the request body
     } = req.body;
 
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       const imageUrls: string[] = [];
       const random_number = commonController.generateOtp();
 
       // Process the images array
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < img.length; i++) {
         const _image = img[i];
         if (_image) {
-          const imageFilename = `productimage/image${i + 1}_${userId}_${random_number}.png`;
-          const image64Data = _image.replace(/^data:([A-Za-z-+/]+);base64,/, "");
-          fs.writeFileSync(imageFilename, image64Data, { encoding: "base64" });
-          imageUrls.push(`https://asvatok.onrender.com/${imageFilename}`);
+          
+          const check = isBase64DataURI(_image)
+
+          if (check) {
+            const imageFilename = `productimage/image${i + 1}_${userId}_${random_number}.png`;
+            const image64Data = _image.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+            fs.writeFileSync(imageFilename, image64Data, { encoding: "base64" });
+            imageUrls.push(`https://api.asvatok.com/${imageFilename}`);
+          } else {
+            imageUrls.push(_image)
+          }
         } else {
           imageUrls.push(""); // Push an empty string if the image is not present
         }
       }
-    
+
 
       let videoUrl = "";
       if (video) {
-        const videoFilename = `productvideo/video_${userId}_${random_number}.mp4`;
-        const videoBase64Data = video.replace(/^data:([A-Za-z-+/]+);base64,/, "");
-        fs.writeFileSync(videoFilename, videoBase64Data, { encoding: "base64" });
-        videoUrl = `https://asvatok.onrender.com/${videoFilename}`;
+        const check = isBase64DataURI(video)
+        if (check) {
+          const videoFilename = `productvideo/video_${userId}_${random_number}.mp4`;
+          const videoBase64Data = video.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+          fs.writeFileSync(videoFilename, videoBase64Data, { encoding: "base64" });
+          videoUrl = `https://api.asvatok.com/${videoFilename}`;
+        } else {
+          videoUrl = video
+        }
       }
 
       let cover_pic_ = "";
       if (cover_pic) {
-        const coverFilename = `productimage/cover_pic_${userId}_${random_number}.png`;
-        const coverBase64Data = cover_pic.replace(/^data:([A-Za-z-+/]+);base64,/, "");
-        fs.writeFileSync(coverFilename, coverBase64Data, { encoding: "base64" });
-        cover_pic_ = `https://asvatok.onrender.com/${coverFilename}`;
+        const check = isBase64DataURI(cover_pic)
+        if (check) {
+          const coverFilename = `productimage/cover_pic_${userId}_${random_number}.png`;
+          const coverBase64Data = cover_pic.replace(/^data:([A-Za-z-+/]+);base64,/, "");
+          fs.writeFileSync(coverFilename, coverBase64Data, { encoding: "base64" });
+          cover_pic_ = `https://api.asvatok.com/${coverFilename}`;
+        } else {
+          cover_pic_ = cover_pic;
+        }
       }
 
-      await codeController.add_product_admin({
-        userId,
+      await codeController.update_product_admin({
+        id,userId,
         sku_code,
         name,
         description,
@@ -248,7 +318,7 @@ class userController {
         keyword,
         hidden,
         images: imageUrls, // Use the processed image URLs
-        cover_pic: cover_pic_,contactNumber,currentQuantity
+        cover_pic: cover_pic_, contactNumber, currentQuantity
       }, res);
     } catch (e) {
       console.warn(e);
@@ -256,12 +326,16 @@ class userController {
     }
   }
 
-  async get_product_admin_by_id(req: Request, res: Response) {
+  async get_product_admin_by_id(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const {id}= req.body
+    const { id } = req.body
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.get_product_admin_by_id(
-        { userId,id },
+        { userId, id },
         res
       );
     } catch (e) {
@@ -270,12 +344,16 @@ class userController {
     }
   }
 
-  async update_product_quantity(req: Request, res: Response) {
+  async update_product_quantity(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const {id, currentQuantity}= req.body
+    const { id, currentQuantity } = req.body
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.update_product_quantity(
-        { userId,id,currentQuantity },
+        { userId, id, currentQuantity },
         res
       );
     } catch (e) {
@@ -284,12 +362,16 @@ class userController {
     }
   }
 
-  async update_product_price(req: Request, res: Response) {
+  async update_product_price(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const {id, price}= req.body
+    const { id, price } = req.body
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.update_product_price(
-        { userId,id,price },
+        { userId, id, price },
         res
       );
     } catch (e) {
@@ -298,12 +380,16 @@ class userController {
     }
   }
 
-  async get_all_users(req: Request, res: Response) {
+  async get_all_users(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const {id}= req.body
+    const { id, search, page } = req.body
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.get_all_users(
-        { userId,id },
+        { userId, id, search, page },
         res
       );
     } catch (e) {
@@ -312,12 +398,16 @@ class userController {
     }
   }
 
-  async get_user_by_id(req: Request, res: Response) {
+  async get_user_by_id(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const {id}= req.body
+    const { id } = req.body
     try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
       await codeController.get_user_by_id(
-        { userId,id },
+        { userId, id },
         res
       );
     } catch (e) {
@@ -326,12 +416,58 @@ class userController {
     }
   }
 
-  async approve_sell_trade(req: Request, res: Response) {
+  // async approve_sell_trade(req: Request, res: Response, next: NextFunction) {
+  //   const userId = (req as any).user?.id;
+  //   const { id } = req.body
+  //   try {
+  //     const isAdmin = checkAdmin(userId, res)
+  //     if (isAdmin) {
+  //       return isAdmin
+  //     }
+  //     await codeController.approve_sell_trade(
+  //       { userId, id },
+  //       res
+  //     );
+  //   } catch (e) {
+  //     console.warn(e);
+  //     commonController.errorMessage(`${e}`, res);
+  //   }
+  // }
+
+  // async reject_sell_trade(req: Request, res: Response, next: NextFunction) {
+  //   const userId = (req as any).user?.id;
+  //   const { id } = req.body
+  //   try {
+  //     const isAdmin = checkAdmin(userId, res)
+  //     if (isAdmin) {
+  //       return isAdmin
+  //     }
+  //     await codeController.reject_sell_trade(
+  //       { userId, id },
+  //       res
+  //     );
+  //   } catch (e) {
+  //     console.warn(e);
+  //     commonController.errorMessage(`${e}`, res);
+  //   }
+  // }
+
+  async approve_trade(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const {id}= req.body
+    const { id, userIdBuyer, userIdSeller, sellId, buyId
+      , product_id, quantityBuy, amountBuy, quantitySell, amountSell,
+      quantityToTrade, totalAmount, sellQuantityAfterSub } = req.body
     try {
-      await codeController.approve_sell_trade(
-        { userId,id },
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.approve_trade(
+        {
+          id ,userId, userIdBuyer, userIdSeller, sellId, buyId
+          , product_id, quantityBuy, amountBuy, quantitySell, amountSell,
+          quantityToTrade, totalAmount, sellQuantityAfterSub
+        },
         res
       );
     } catch (e) {
@@ -340,12 +476,16 @@ class userController {
     }
   }
 
-  async reject_sell_trade(req: Request, res: Response) {
+  async reject_trade(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const {id}= req.body
+    const { id, sellId, buyId, } = req.body
     try {
-      await codeController.reject_sell_trade(
-        { userId,id },
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.reject_trade(
+        { id ,sellId, buyId, },
         res
       );
     } catch (e) {
@@ -354,12 +494,16 @@ class userController {
     }
   }
 
-  async approve_buy_trade(req: Request, res: Response) {
+  async get_all_trades(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const {id}= req.body
+    const { page, search } = req.body
     try {
-      await codeController.approve_buy_trade(
-        { userId,id },
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.get_all_trades(
+        { userId, page, search },
         res
       );
     } catch (e) {
@@ -368,12 +512,16 @@ class userController {
     }
   }
 
-  async reject_buy_trade(req: Request, res: Response) {
+  async get_user_assets(req: Request, res: Response, next: NextFunction) {
     const userId = (req as any).user?.id;
-    const {id}= req.body
+    const { page } = req.body
     try {
-      await codeController.reject_buy_trade(
-        { userId,id },
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.get_user_assets(
+        { userId, page },
         res
       );
     } catch (e) {
@@ -381,6 +529,156 @@ class userController {
       commonController.errorMessage(`${e}`, res);
     }
   }
+
+  async get_all_transactions(req: Request, res: Response, next: NextFunction) {
+    const userId = (req as any).user?.id;
+    const { page, search } = req.body
+    try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.get_all_transactions(
+        { userId, page, search },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async deductBalance(req: Request, res: Response, next: NextFunction) {
+    const userId = (req as any).user?.id;
+    const { id, amount } = req.body
+    try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.deductBalance(
+        { userId, id, amount },
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async bulk_product_data(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const filePath = (req as any).file.path;
+    try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.bulk_product_data(
+        { filePath},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async adminDashboard(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.adminDashboard(
+        { userId},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+  async updateFees(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {razorPay, buy, sell, ipo, withdraw} = req.body
+    try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.updateFees(
+        { userId, razorPay, buy, sell, ipo, withdraw},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async getAllWithdrawReq(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    
+    try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.getAllWithdrawReq(
+        {  userId},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      return commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async approveWithdrawReq(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id} = req.body
+    
+    try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.approveWithdrawReq(
+        {  userId,id},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      return commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+  async rejectWithdrawReq(req: Request, res: Response) {
+    const userId = (req as any).user?.id;
+    const {id} = req.body
+    
+    try {
+      const isAdmin = checkAdmin(userId, res)
+      if (isAdmin) {
+        return isAdmin
+      }
+      await codeController.rejectWithdrawReq(
+        {  userId,id},
+        res
+      );
+    } catch (e) {
+      console.warn(e);
+      return commonController.errorMessage(`${e}`, res);
+    }
+  }
+
+}
+
+function isBase64DataURI(str:string) {
+  const regex = /^data:([A-Za-z-+/]+);base64,/;
+  return regex.test(str);
 }
 
 export default new userController();

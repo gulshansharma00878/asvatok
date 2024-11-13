@@ -33,7 +33,8 @@
     hidden: boolean;
     approved: boolean;
     contactNumber: string;
-    currentQuantity: string
+    currentQuantity: string;
+    ipoQuantity: string;
 
   }
 
@@ -71,6 +72,7 @@
       approved!: boolean;
       contactNumber!: string;
       currentQuantity!: string
+      ipoQuantity!: string;
 
       static associate(models: any) {
         // Define associations here
@@ -111,6 +113,7 @@
         approved: { type: DataTypes.BOOLEAN },
         contactNumber: { type: DataTypes.STRING },
         currentQuantity: { type: DataTypes.STRING },
+        ipoQuantity:{ type: DataTypes.STRING },
       },
       {
         sequelize,

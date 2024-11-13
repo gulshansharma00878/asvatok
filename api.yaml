@@ -4,8 +4,8 @@ info:
   description: API for Asvatok API by Gulshan Sharma
   version: 1.0.0
 servers:
-  - url: https://asvatok.onrender.com
   - url: http://localhost:4000
+  - url: https://api.asvatok.com
     description: Main server
 components:
   securitySchemes:
@@ -41,8 +41,8 @@ paths:
           description: OK
         '400':
           description: Bad Request
-        '401':
-          description: User Not verified please verify first And redirect to verify otp page
+        '500':
+          description: Internal Server Error OR authorization header must be provided
 
   /api/v1/auth/registration:
     post:
@@ -86,6 +86,8 @@ paths:
           description: OK
         '400':
           description: Bad Request
+        '500':
+          description: Internal Server Error OR authorization header must be provided
 
   /api/v1/auth/resend_email:
     post:
@@ -266,6 +268,10 @@ paths:
                   type: string
                   format: 1
                   description: profile pic.
+                 name:
+                  type: string
+                  format: 1
+                  description: profile name.
                required:
                  - id
                  - aboutMe
@@ -760,6 +766,10 @@ paths:
                   type: string
                   minLength: 1
                   description: number of page.
+                status:
+                  type: string
+                  minLength: 1
+                  description: status 0,1,2,3,4.
                required:
                  - page
       responses:
@@ -1092,9 +1102,9 @@ paths:
         '500':
          description: Internal Server Error OR authorization header must be provided.
 
-  /api/v1/member/add_product_admin:
+  /api/v1/member/update_product_admin:
     post:
-      summary: Add auto approved Products.
+      summary: update Products.
       tags:
         - Admin
       requestBody:
@@ -1103,9 +1113,9 @@ paths:
             schema:
               type: object
               properties:
-                sku_code: 
+                id:
                   type: string
-                  description: SKU code
+                  description: id of product
                 cover_pic:
                   type: string
                   description: cover picture of product
@@ -1151,21 +1161,12 @@ paths:
                 remarks: 
                   type: string
                   description: Remarks
-                quantity: 
-                  type: string
-                  description: Quantity
                 custom_url: 
                   type: string
                   description: Custom URL
                 video: 
                   type: string
                   description: Video URL
-                current_price: 
-                  type: string
-                  description: Current price
-                initial_price: 
-                  type: string
-                  description: Initial price
                 note: 
                   type: string
                   description: Note
@@ -1189,8 +1190,8 @@ paths:
                 contactNumber: 
                   type: string
                   description: contactNumber
-      #         required: 
-      #           - sku_code
+              required: 
+                  - id
       #           - name
       #           - description
       #           - issue_year
@@ -1473,64 +1474,6 @@ paths:
         '200':
           description: OK
 
-  /api/v1/member/approve_sell_trade:
-    post:
-      summary: approve sell trade
-      tags:
-        - Admin
-      requestBody:
-        content:
-          application/json:
-             schema:
-               type: object
-               properties:
-                 id:
-                   type: string
-                   minLength: 1
-                   description: id of sell trade request.
-               required:
-                 - id
-      security:
-       - BearerAuth: []
-      responses:
-        '200':
-         description: OK
-        '400':
-         description: Bad Request
-        '500':
-         description: Internal Server Error OR authorization header must be provided.
-
-  /api/v1/member/reject_sell_trade:
-    post:
-      summary: reject sell trade
-      tags:
-        - Admin
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: id of sell trade request.
-                # reason:
-                #   type: string
-                #   minLength: 1
-                #   description: reason.
-              required:
-                - id
-                # - reason
-      security:
-      - BearerAuth: []
-      responses:
-        '200':
-         description: OK
-        '400':
-         description: Bad Request
-        '500':
-         description: Internal Server Error OR authorization header must be provided.
 
   /api/v1/member/buy_trade:
     post:
@@ -1565,7 +1508,7 @@ paths:
         '200':
           description: OK
 
-  /api/v1/member/approve_buy_trade:
+  /api/v1/member/approve_trade:
     post:
       summary: approve buy trade
       tags:
@@ -1576,12 +1519,67 @@ paths:
              schema:
                type: object
                properties:
-                 id:
+                 userIdBuyer:
                    type: string
                    minLength: 1
-                   description: id of buy trade request.
+                   description: userIdBuyer.
+                 userIdSeller:
+                   type: string
+                   minLength: 1
+                   description: userIdSeller.
+                 sellId:
+                   type: string
+                   minLength: 1
+                   description: sellId.
+                 buyId:
+                   type: string
+                   minLength: 1
+                   description: buyId.
+                 product_id:
+                   type: string
+                   minLength: 1
+                   description: product_id.
+                 quantityBuy:
+                   type: string
+                   minLength: 1
+                   description: quantityBuy.
+                 amountBuy:
+                   type: string
+                   minLength: 1
+                   description: amountBuy.
+                 quantitySell:
+                   type: string
+                   minLength: 1
+                   description: quantitySell.
+                 amountSell:
+                   type: string
+                   minLength: 1
+                   description: amountSell.
+                 quantityToTrade:
+                   type: string
+                   minLength: 1
+                   description: quantityToTrade.
+                 totalAmount:
+                   type: string
+                   minLength: 1
+                   description: totalAmount.
+                 sellQuantityAfterSub:
+                   type: string
+                   minLength: 1
+                   description: sellQuantityAfterSub.
                required:
-                 - id
+                 - userIdBuyer
+                 - userIdSeller
+                 - sellId
+                 - buyId
+                 - product_id
+                 - quantityBuy
+                 - amountBuy
+                 - quantitySell
+                 - amountSell
+                 - quantityToTrade
+                 - totalAmount
+                 - sellQuantityAfterSub
       security:
        - BearerAuth: []
       responses:
@@ -1592,7 +1590,7 @@ paths:
         '500':
          description: Internal Server Error OR authorization header must be provided.
 
-  /api/v1/member/reject_buy_trade:
+  /api/v1/member/reject_trade:
     post:
       summary: reject buy trade
       tags:
@@ -1603,13 +1601,17 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: string
-                  minLength: 1
-                  description: id of buy trade request.
+                 sellId:
+                   type: string
+                   minLength: 1
+                   description: sellId.
+                 buyId:
+                   type: string
+                   minLength: 1
+                   description: buyId.
               required:
-                - id
-                # - reason
+                - sellId
+                - buyId
       security:
       - BearerAuth: []
       responses:
@@ -1620,4 +1622,407 @@ paths:
         '500':
          description: Internal Server Error OR authorization header must be provided.
 
+  /api/v1/member/get_trades_by_product_id:
+    post:
+      summary: Get trades by product id where type 1 is buy_trades and type 2 is sell_trades
+      tags:
+        - Trades
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: 
+                  type: string
+                  minLength: 1
+                  description: product id.
+              required: 
+                - id
+      security:
+        - BearerAuth: []
+      responses: 
+        '200':
+          description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
 
+  /api/v1/member/get_all_trades:
+    post:
+      summary: all trades for admin with pagination
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                page:
+                  type: string
+                  minLength: 1
+                  description: number of page.
+               required:
+                  - page
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/user_asset_balance:
+    post:
+      summary: User asset balance
+      tags:
+        - wallets
+      requestBody:
+        content:
+          application/json:
+             schema:
+               type: object
+               properties:
+                product_id:
+                  type: string
+                  minLength: 1
+                  description: number of page.
+               required:
+                  - product_id
+      security:
+       - BearerAuth: []
+      responses:
+        '200':
+         description: OK
+        '400':
+         description: Bad Request
+        '500':
+         description: Internal Server Error OR authorization header must be provided.
+
+  /api/v1/member/articles/create:
+    post:
+      summary: Create a new article.
+      tags:
+        - Articles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the article.
+                writer:
+                  type: string
+                  description: Writer of the article.
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: Timestamp when the article was created.
+                category:
+                  type: string
+                  description: Category of the article.
+                content:
+                  type: string
+                  description: Content of the article.
+                image:
+                  type: string
+                  description: URL of the cover image for the article.
+              required:
+                - title
+                - writer
+                - timestamp
+                - category
+                - content
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/member/articles/non-active:
+    post:
+      summary: Get all non-active articles.
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/member/articles/active:
+    post:
+      summary: Get all active articles.
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/articles/all:
+    post:
+      summary: Get all active articles.
+      tags:
+        - Articles
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/articles/id:
+    post:
+      summary: Get an article by its ID.
+      tags:
+        - Articles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: id of article.
+              required:
+                - id
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/member/articles/update:
+    post:
+      summary: Update an article by its ID.
+      tags:
+        - Articles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: id of article.
+                title:
+                  type: string
+                  description: Title of the article.
+                writer:
+                  type: string
+                  description: Writer of the article.
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: Timestamp when the article was created.
+                category:
+                  type: string
+                  description: Category of the article.
+                content:
+                  type: string
+                  description: Content of the article.
+                image:
+                  type: string
+                  description: URL of the cover image for the article.
+              required:
+                - id
+                - title
+                - writer
+                - timestamp
+                - category
+                - content
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/member/articles/delete:
+    post:
+      summary: Delete an article by its ID.
+      tags:
+        - Articles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: id of article.
+              required: 
+                - id
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/auth/forget_password:
+    post:
+      summary: Forget password.
+      tags:
+        - Forget password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email of user.
+              required:
+                - email
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+
+  /api/v1/member/search:
+    post:
+      summary: Search.
+      tags:
+        - Search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                search:
+                  type: string
+                  description: search.
+              required:
+                - search
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/member/chartdata:
+    post:
+      summary: chartdata.
+      tags:
+        - charts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+                  description: Product Id.
+                date:
+                  type: '2024-09-01'
+                  description: 2024-09-01.
+                type:
+                  type: 'types 0 is for days chart, 1 is for months, 2 is for year chart and 3 is for one day chart.'
+                  description: types 0 is for days chart, 1 is for months, 2 is for year chart and 3 is for one day chart.
+              required:
+                - search
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/member/get_user_assets:
+    post:
+      summary: get_user_assets.
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: string
+                  description: page.
+              required:
+                - page
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /api/v1/member/get_all_transactions:
+    post:
+      summary: get_all_transactions.
+      tags:
+        - Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: string
+                  description: page.
+              required:
+                - page
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error

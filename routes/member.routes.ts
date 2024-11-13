@@ -38,13 +38,12 @@ router.post("/edit_profile",userController.edit_profile);
 router.post("/get_profile",userController.get_profile);
 router.post("/changepassword", userController.change_password);
 
-router.post("/add_product", userController.add_product);
+router.post("/add_product", userController.add_product);    
 router.post("/get_product", userController. get_product);
 
 router.post("/buy_request", userController.buy_request);
-router.post("/get_buy_requests",userController.get_buy_requests)
+router.post("/get_buy_requests",userController.get_buy_requests)    
 
-router.post("/bulk_product_data", uploadFile.single("file"),userController.bulk_product_data);
 
 router.post("/add_wallet_order",userController.add_wallet_order)
 router.post("/get_wallet_balance",userController.get_wallet_balance)
@@ -59,10 +58,30 @@ router.post("/get_category_by_id",userController.get_category_by_id)
 router.post("/purchase_history",userController.purchase_history)
 
 router.post("/razor_verify_auth",userController.razor_verify_auth)
+router.post("/user_asset_balance",userController.user_asset_balance)
 
 // trade
 router.post("/sell_trade",userController.sell_trade)
 router.post("/buy_trade",userController.buy_trade)
+router.post("/get_trades_by_product_id",userController.get_trades_by_product_id)
+
+// Article 
+router.post("/articles/create", userController.createArticle);
+router.post("/articles/non-active", userController.getAllNonActiveArticles);
+router.post("/articles/active", userController.getAllActiveArticles);
+
+router.post("/articles/delete", userController.deleteArticle);
+router.post("/articles/update", userController.updateArticle);
+
+router.post("/search", userController.search);
+router.post("/chartdata", userController.chartData);
+// asset holders from asset or product id
+router.post("/asset_holder_by_product_id", userController.assetHolderByProductId);
+
+router.post("/add_bank_account", userController.addBankAccount);
+router.post("/get_user_bank_accounts", userController.getUserBankAcc);
+router.post("/add_withdraw_request", userController.addWithdrawRequest);
+router.post("/get_user_withdraws", userController.getUserWithdraws);
 
 
 // admin section
@@ -80,23 +99,30 @@ router.post("/update_product_quantity",adminController.update_product_quantity)
 router.post("/update_product_price",adminController.update_product_price)
 
 router.post("/all_product_admin",adminController.all_product_admin)
-router.post("/add_product_admin",adminController.add_product_admin)
+router.post("/update_product_admin",adminController.update_product_admin)
 router.post("/get_product_admin_by_id",adminController.get_product_admin_by_id)
 router.post("/get_all_users",adminController.get_all_users)
 router.post("/get_user_by_id",adminController.get_user_by_id)
+router.post("/get_all_trades",adminController.get_all_trades)
+router.post("/get_user_assets",adminController.get_user_assets)
+router.post("/get_all_transactions",adminController.get_all_transactions)
+router.post("/deduct_user_balance",adminController.deductBalance)
+router.post("/bulk_product_data", uploadFile.single("file"),adminController.bulk_product_data);
+router.post("/admin_dashboard",adminController.adminDashboard)
+router.post("/update_fees",adminController.updateFees)
+
+router.post("/all_withdraw_request",adminController.getAllWithdrawReq)
+router.post("/approve_withdraw",adminController.approveWithdrawReq)
+router.post("/reject_withdraw",adminController.rejectWithdrawReq)
+
 
 // trade admin
 
-router.post("/approve_sell_trade",adminController.approve_sell_trade)
-router.post("/reject_sell_trade",adminController.reject_sell_trade)
+// router.post("/approve_sell_trade",adminController.approve_sell_trade)
+// router.post("/reject_sell_trade",adminController.reject_sell_trade)
 
-router.post("/approve_buy_trade",adminController.approve_buy_trade)
-router.post("/reject_buy_trade",adminController.reject_buy_trade)
-
-
-
-
-
+router.post("/approve_trade",adminController.approve_trade)
+router.post("/reject_trade",adminController.reject_trade)
 
 
 export default router;

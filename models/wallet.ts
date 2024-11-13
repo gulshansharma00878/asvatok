@@ -6,17 +6,19 @@ interface UsersAttributes {
   address: string;
   amount: string;
   wallet: string;
+  freezeAmount: string;
   active: boolean;
 }
 
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
   class Users extends Model<UsersAttributes> implements UsersAttributes {
-    
+
     userId!: number;
-  address!: string;
-  amount!: string;
-  wallet!: string;
-  active!: boolean;
+    address!: string;
+    amount!: string;
+    wallet!: string;
+    freezeAmount!: string;
+    active!: boolean;
 
     static associate(models: any) {
       // Define associations here
@@ -32,6 +34,7 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
       address: { type: DataTypes.STRING },
       amount: { type: DataTypes.STRING },
       wallet: { type: DataTypes.STRING },
+      freezeAmount: { type: DataTypes.STRING,defaultValue: '0' },
       active: { type: DataTypes.BOOLEAN },
     },
     {

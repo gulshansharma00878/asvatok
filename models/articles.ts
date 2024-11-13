@@ -30,23 +30,23 @@ module.exports = (sequelize: Sequelize) => {
     {
       title: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       writer: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       timestamp: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       category: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       content: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       cover_image: {
         type: DataTypes.STRING,
@@ -62,8 +62,9 @@ module.exports = (sequelize: Sequelize) => {
       sequelize,
       modelName: "articles",
       tableName: "articles", // Specify the table name
-      timestamps: false, // Disable automatic timestamps (createdAt, updatedAt)
+      timestamps: true, // Disable automatic timestamps (createdAt, updatedAt)
     }
+
   );
 
   return Article;

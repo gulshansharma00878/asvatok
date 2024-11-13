@@ -2,23 +2,25 @@
 import { DateDataType, Model, Sequelize } from "sequelize";
 
 interface UsersAttributes {
-
   userId: number;
-  product_id: string;
-  quantity: string;
-  active: number
-  latestId: number
-
-
+  razorPay: string;
+  buy: string;
+  sell: string;
+  ipo: string;
+  withdraw: string;
+  active: boolean;
 }
 
 module.exports = (sequelize: Sequelize, DataTypes: any) => {
   class Users extends Model<UsersAttributes> implements UsersAttributes {
+
     userId!: number;
-    product_id!: string;
-    quantity!: string;
-    active!: number
-    latestId!: number
+    razorPay!: string;
+    buy!: string;
+    sell!: string;
+    ipo!: string;
+    withdraw!: string;
+    active!: boolean;
 
     static associate(models: any) {
       // Define associations here
@@ -31,14 +33,16 @@ module.exports = (sequelize: Sequelize, DataTypes: any) => {
   Users.init(
     {
       userId: { type: DataTypes.INTEGER },
-      product_id: { type: DataTypes.STRING },
-      quantity: { type: DataTypes.TEXT },
-      active: { type: DataTypes.INTEGER },
-      latestId: { type: DataTypes.INTEGER },
+      razorPay: { type: DataTypes.STRING },
+      buy: { type: DataTypes.STRING },
+      sell: { type: DataTypes.STRING },
+      ipo: { type: DataTypes.STRING },
+      withdraw: { type: DataTypes.STRING },
+      active: { type: DataTypes.BOOLEAN },
     },
     {
       sequelize,
-      modelName: "user_assets",
+      modelName: "fees",
     }
   );
 

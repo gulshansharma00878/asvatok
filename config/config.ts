@@ -18,16 +18,19 @@ module.exports = {
 
   "development": {
     "username": process.env.DB_USER,
+    "port": process.env.DB_PORT,
     "password": process.env.DB_PASS,
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "dialect": "mysql",
-    // "ssl": 'true',
+    // "ssl": 'true', 
     // logging: false,
-    // ssl: {
-    //   rejectUnauthorized: true,
-    //   ca: fs.readFileSync("./ca_asvatok.cer").toString(),
-    // },
+    // dialectOptions: {
+    //   ssl: {
+    //     require: true,
+    //     rejectUnauthorized: false, // You can change this based on your requirements
+    //   }
+    // }
   },
   "test": {
     "username": "root",
@@ -42,6 +45,8 @@ module.exports = {
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "dialect": "mysql",
+    "ssl": 'true',
+
    
   }, 
 }
